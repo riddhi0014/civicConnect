@@ -20,6 +20,7 @@ import {
   FileCheck2
 } from "lucide-react";
 import { motion } from "framer-motion";
+import CategoryIcon from "../../components/CategoryIcon";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -286,7 +287,9 @@ export default function OfficerHome() {
                 {/* Header */}
                 <div className="flex justify-between items-start flex-wrap gap-3 mb-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{c.category?.icon || "📋"}</span>
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700">
+                      <CategoryIcon name={c.category?.name} icon={c.category?.icon} size={22} />
+                    </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-xs font-bold text-slate-400">

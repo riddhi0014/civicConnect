@@ -19,28 +19,31 @@ import {
   Star
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import CategoryIcon from "../../components/CategoryIcon";
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.05
+      staggerChildren: 0.05,
+      delayChildren: 0.02
     }
   }
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.35, ease: "easeOut" }
+    transition: { duration: 0.25, ease: "easeOut" }
   }
 };
 
 export default function MyComplaints({ onFileNew }) {
+  const { t } = useTranslation();
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -151,18 +154,18 @@ export default function MyComplaints({ onFileNew }) {
 
   if (loading) {
     return (
-      <div className="text-center py-12 text-slate-400">
-        <Loader2 size={32} className="animate-spin text-blue-600 mx-auto mb-3" />
-        <p className="text-sm">Loading your grievance records...</p>
+      <div className="text-center py-16 text-slate-400">
+        <Loader2 size={24} className="animate-spin text-slate-600 mx-auto mb-2" />
+        <p className="text-xs font-mono uppercase tracking-widest text-slate-500">Loading records...</p>
       </div>
     );
   }
 
   return (
-    <div>
-      {/* Filters Toolbar */}
+    <div className="space-y-4">
+      {/* Filters Toolbar: Sharp, Clean Monospace Edge */}
       <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-1.5 flex-wrap">
           {[
             { key: "all", label: "All (" + complaints.length + ")" },
             { key: "active", label: "In Progress (" + complaints.filter((c) => ["submitted", "assigned", "in_progress", "reopened"].includes(c.status)).length + ")" },
@@ -173,10 +176,10 @@ export default function MyComplaints({ onFileNew }) {
               key={tab.key}
               whileTap={{ scale: 0.98 }}
               onClick={() => setFilter(tab.key)}
-              className={"px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer " +
+              className={"px-3 py-1.5 rounded text-xs font-medium tracking-wide transition-colors cursor-pointer " +
                 (filter === tab.key
-                  ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50")}
+                  ? "bg-slate-900 text-white shadow-xs font-semibold"
+                  : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200")}
             >
               {tab.label}
             </motion.button>
@@ -186,14 +189,14 @@ export default function MyComplaints({ onFileNew }) {
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={fetchComplaints}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer shadow-sm"
+          className="px-3 py-1.5 rounded text-xs font-medium bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 cursor-pointer transition-colors shadow-xs"
         >
           ↻ Refresh
         </motion.button>
       </div>
 
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-3 text-sm mb-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded p-3 text-xs font-mono">
           {error}
         </div>
       )}
@@ -201,26 +204,26 @@ export default function MyComplaints({ onFileNew }) {
       {/* Empty State */}
       {filteredComplaints.length === 0 && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white border border-slate-200 rounded-2xl text-center py-12 px-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="bg-white border border-slate-200 rounded-lg text-center py-16 px-6"
         >
-          <div className="w-13 h-13 rounded-2xl bg-slate-100 text-slate-400 inline-flex items-center justify-center mb-3.5">
-            <FileQuestion size={26} />
+          <div className="w-10 h-10 rounded bg-slate-100 text-slate-400 inline-flex items-center justify-center mb-3">
+            <FileQuestion size={20} />
           </div>
-          <h3 className="text-lg font-bold text-slate-900 mb-1">
-            No complaints found in this view
+          <h3 className="text-sm font-semibold text-slate-900 mb-1">
+            No records found
           </h3>
-          <p className="text-sm text-slate-500 mb-5 max-w-sm mx-auto">
+          <p className="text-xs text-slate-500 mb-4 max-w-xs mx-auto">
             {filter === "all"
-              ? "You have not submitted any civic grievances yet."
-              : "There are currently no complaints matching this filter."}
+              ? "You have not logged any civic complaints yet."
+              : "No records match the selected filter view."}
           </p>
           {onFileNew && (
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={onFileNew}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm cursor-pointer"
+              className="px-4 py-2 rounded text-xs font-medium bg-slate-900 hover:bg-slate-800 text-white cursor-pointer transition-colors"
             >
               File a Grievance
             </motion.button>
@@ -228,12 +231,12 @@ export default function MyComplaints({ onFileNew }) {
         </motion.div>
       )}
 
-      {/* Staggered Complaints List Entrance */}
+      {/* Complaints List */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="flex flex-col gap-5"
+        className="flex flex-col gap-3"
       >
         {filteredComplaints.map((c) => {
           const isExpanded = expandedId === c.id;
@@ -255,158 +258,136 @@ export default function MyComplaints({ onFileNew }) {
             <motion.div
               key={c.id}
               variants={cardVariants}
-              whileHover={{ y: -2 }}
-              transition={{ duration: 0.2 }}
-              className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative"
+              className="bg-white border border-slate-200 rounded-lg p-4 sm:p-5 shadow-xs hover:border-slate-300 transition-all relative space-y-3"
             >
-              {/* Header Meta */}
-              <div className="flex justify-between items-start flex-wrap gap-3 mb-3.5">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{c.category?.icon || "📋"}</span>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-slate-400">
-                        #{c.id.slice(0, 8)}
-                      </span>
-                      <span className="text-xs font-bold text-blue-600">
-                        {c.category?.name}
-                      </span>
-                      {c.subcategory && (
-                        <span className="text-xs text-slate-400">
-                          · {c.subcategory.name}
-                        </span>
-                      )}
-                    </div>
+              {/* Header Meta: Flat Software Log Style */}
+              <div className="flex justify-between items-center text-xs flex-wrap gap-2 pb-2.5 border-b border-slate-100">
+                <div className="flex items-center gap-2 font-mono">
+                  <span className="text-slate-900 font-bold">#{c.id.slice(0, 8)}</span>
+                  <span className="text-slate-300">/</span>
+                  <div className="flex items-center gap-1.5 font-sans">
+                    <CategoryIcon name={c.category?.name} icon={c.category?.icon} size={15} className="text-slate-600" />
+                    <span className="text-slate-600 uppercase tracking-wider text-[11px] font-semibold">
+                      {c.category?.name || "Incident"}
+                    </span>
                   </div>
+                  {c.subcategory && (
+                    <span className="text-slate-400 font-sans text-[11px]">
+                      · {c.subcategory.name}
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex gap-2 items-center">
-                  {/* Status Badges with Subtle Pulse on Urgent / High Priority */}
                   {isHighPriority && (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                      <span className="w-2 h-2 rounded-full bg-rose-600 urgent-pulse-dot" />
-                      Urgent / High
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-red-600 text-white">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      Urgent
                     </span>
                   )}
 
                   {!isHighPriority && (
-                    <span className={"inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold " +
-                      (c.priority === "medium"
-                        ? "bg-amber-50 text-amber-700 border border-amber-200"
-                        : "bg-emerald-50 text-emerald-700 border border-emerald-200")}
-                    >
-                      {c.priority} priority
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-slate-100 text-slate-700">
+                      {c.priority}
                     </span>
                   )}
 
-                  <span className={"inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold tracking-wide capitalize " +
-                    (c.status === "resolved" || c.status === "closed"
-                      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                      : c.status === "reopened"
-                      ? "bg-rose-50 text-rose-700 border border-rose-200"
-                      : "bg-blue-50 text-blue-700 border border-blue-200")}
-                  >
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-slate-900 text-white">
                     {c.status.replace("_", " ")}
                   </span>
                 </div>
               </div>
 
-              {/* Title & Desc */}
-              <h3 className="text-base font-bold text-slate-900 mb-1.5">
-                {c.title}
-              </h3>
-              <p className="text-sm text-slate-600 leading-relaxed mb-3.5">
-                {c.description}
-              </p>
+              {/* Title & Description */}
+              <div className="space-y-0.5">
+                <h3 className="text-sm font-semibold text-slate-900 tracking-tight">
+                  {c.title}
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                  {c.description}
+                </p>
+              </div>
 
-              {/* AI Triage Banner */}
+              {/* Clean Minimalist Triage Note */}
               {c.ai_summary && (
-                <div className="bg-slate-50 border border-slate-200 border-l-4 border-l-blue-600 rounded-lg p-2.5 mb-3.5 text-xs text-slate-700 flex items-start gap-2">
-                  <Sparkles size={14} className="text-blue-600 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold text-slate-900">AI Triage Summary: </span>
-                    <span className="italic text-slate-600">&quot;{c.ai_summary}&quot;</span>
-                  </div>
+                <div className="bg-slate-50 border-l-2 border-slate-900 p-2.5 rounded-r text-xs text-slate-600">
+                  <span className="font-mono text-[10px] text-slate-400 uppercase tracking-widest block mb-0.5">Automated Triage Assessment</span>
+                  <p className="italic text-slate-700">&quot;{c.ai_summary}&quot;</p>
                 </div>
               )}
 
-              {/* Meta details */}
-              <div className="flex gap-4 items-center flex-wrap text-xs text-slate-400 pb-3.5 border-b border-slate-100">
-                <span className="flex items-center gap-1.5">
-                  <MapPin size={13} className="text-blue-600" />
-                  {c.location_text} {c.ward ? "(" + c.ward + ")" : ""}
-                </span>
-
-                <span className="flex items-center gap-1.5">
-                  <Calendar size={13} />
-                  Filed: {new Date(c.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
-                </span>
-
+              {/* Metadata Line */}
+              <div className="flex flex-wrap items-center gap-y-1 gap-x-3 text-[11px] text-slate-500 pt-1">
+                <div className="flex items-center gap-1">
+                  <MapPin size={12} className="text-slate-400" />
+                  <span>{c.location_text} {c.ward ? "(" + c.ward + ")" : ""}</span>
+                </div>
+                <span>·</span>
+                <div className="flex items-center gap-1">
+                  <Calendar size={12} className="text-slate-400" />
+                  <span>Filed: {new Date(c.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</span>
+                </div>
                 {c.due_at && (
-                  <span className="flex items-center gap-1.5">
-                    <Clock size={13} />
-                    Target SLA: {new Date(c.due_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                  </span>
+                  <>
+                    <span>·</span>
+                    <div className="flex items-center gap-1">
+                      <Clock size={12} className="text-slate-400" />
+                      <span>SLA: {new Date(c.due_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+                    </div>
+                  </>
                 )}
-
                 {c.assigned_officer && (
-                  <span className="flex items-center gap-1.5 text-emerald-600 font-semibold">
-                    <UserCheck size={14} />
-                    Assigned: {c.assigned_officer.full_name}
-                  </span>
+                  <div className="flex items-center gap-1 font-medium text-slate-900 ml-auto bg-slate-100 px-2 py-0.5 rounded">
+                    <UserCheck size={12} className="text-slate-600" />
+                    <span>{c.assigned_officer.full_name}</span>
+                  </div>
                 )}
               </div>
 
-              {/* Status Stepper */}
-              <div className="mt-2">
+              {/* Status Stepper Tracker */}
+              <div className="pt-2 border-t border-slate-100">
                 <StatusStepper status={c.status} closedReason={c.closed_reason} />
               </div>
 
               {/* Problem Photo Thumbnail */}
               {c.photo_url && (
-                <div className="mt-3 flex items-center gap-2.5">
+                <div className="mt-2 flex items-center gap-2">
                   <img
                     src={c.photo_url}
-                    alt="Citizen submission problem photo"
-                    className="w-16 h-12 rounded-lg object-cover border border-slate-200 cursor-pointer hover:opacity-90 transition-opacity"
+                    alt="Problem evidence"
+                    className="w-14 h-10 rounded object-cover border border-slate-200 cursor-pointer hover:opacity-85 transition-opacity"
                     onClick={() => window.open(c.photo_url, "_blank")}
-                    title="Click to view full photo"
                   />
-                  <div className="text-xs text-slate-400">
-                    <span className="font-semibold text-slate-600">Site Photo</span> (click thumbnail to inspect problem)
-                  </div>
+                  <span className="text-[11px] text-slate-500 font-mono">Attached Field Evidence</span>
                 </div>
               )}
 
               {/* Resolution Proof Card */}
               {resolution && (
-                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-4">
-                  <div className="text-emerald-800 font-bold text-xs flex items-center gap-1.5 mb-1.5">
-                    <CheckCircle size={15} /> Officer Resolution Field Proof
+                <div className="bg-slate-50 border border-slate-200 rounded p-3 mt-3 space-y-2">
+                  <div className="text-slate-900 font-semibold text-xs flex items-center gap-1.5">
+                    <CheckCircle size={14} className="text-emerald-600" /> Resolution Remediation Report
                   </div>
                   {resolution.note && (
-                    <p className="text-emerald-900 text-sm mb-3 font-medium">
+                    <p className="text-slate-700 text-xs italic">
                       &quot;{resolution.note}&quot;
                     </p>
                   )}
                   {resolution.after_photo_url && (
-                    <div className="flex items-center gap-3 flex-wrap">
+                    <div className="flex items-center gap-2">
                       <img
                         src={resolution.after_photo_url}
-                        alt="Officer After-photo proof"
-                        className="w-32 h-20 object-cover rounded-lg border-2 border-emerald-300 shadow-sm cursor-pointer hover:scale-105 transition-transform"
+                        alt="Resolution proof"
+                        className="w-24 h-16 object-cover rounded border border-slate-300 cursor-pointer"
                         onClick={() => window.open(resolution.after_photo_url, "_blank")}
-                        title="Click to inspect full after-photo"
                       />
-                      <motion.button
-                        whileTap={{ scale: 0.98 }}
+                      <button
                         type="button"
                         onClick={() => window.open(resolution.after_photo_url, "_blank")}
-                        className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-emerald-800 border border-emerald-300 inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                        className="px-2.5 py-1 rounded text-[11px] font-medium bg-white text-slate-700 border border-slate-300 inline-flex items-center gap-1 cursor-pointer"
                       >
-                        <ExternalLink size={13} />
-                        Open After-Photo Proof
-                      </motion.button>
+                        <ExternalLink size={12} /> Inspect Proof
+                      </button>
                     </div>
                   )}
                 </div>
@@ -414,35 +395,33 @@ export default function MyComplaints({ onFileNew }) {
 
               {/* Citizen Confirmation Panel */}
               {isResolved && (
-                <div className="bg-blue-50 border border-dashed border-blue-300 rounded-xl p-4 mt-4 flex justify-between items-center flex-wrap gap-3">
+                <div className="bg-amber-50/50 border border-amber-200 rounded p-3 mt-3 flex justify-between items-center flex-wrap gap-3">
                   <div>
-                    <h4 className="text-sm font-bold text-blue-900 mb-0.5">
-                      Is the problem actually fixed?
+                    <h4 className="text-xs font-semibold text-slate-900">
+                      Verify Resolution Outcome
                     </h4>
-                    <p className="text-xs text-blue-700">
-                      Verify the officer photo proof above. Confirm to close or reopen to escalate.
+                    <p className="text-[11px] text-slate-500">
+                      Confirm fix or flag unsatisfactory resolution within 72 hours.
                     </p>
                   </div>
 
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-2">
                     <motion.button
                       whileTap={{ scale: 0.98 }}
                       disabled={confirmingId === c.id}
                       onClick={() => handleConfirmFixed(c.id)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                      className="px-3 py-1.5 rounded text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center gap-1 cursor-pointer"
                     >
-                      <ThumbsUp size={14} />
-                      Yes, it is fixed
+                      <ThumbsUp size={12} /> Confirm Fixed
                     </motion.button>
 
                     <motion.button
                       whileTap={{ scale: 0.98 }}
                       disabled={confirmingId === c.id}
                       onClick={() => setReopenModalId(c.id)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold bg-white text-rose-700 border border-rose-300 hover:bg-rose-50 inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                      className="px-3 py-1.5 rounded text-xs font-semibold bg-white text-rose-700 border border-rose-300 hover:bg-rose-50 inline-flex items-center gap-1 cursor-pointer"
                     >
-                      <RotateCcw size={14} />
-                      No, reopen it
+                      <RotateCcw size={12} /> Reopen
                     </motion.button>
                   </div>
                 </div>
@@ -450,138 +429,113 @@ export default function MyComplaints({ onFileNew }) {
 
               {/* Rating & Feedback */}
               {(isResolved || isClosed) && (
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-4">
+                <div className="bg-slate-50 border border-slate-200 rounded p-3 mt-3">
                   {feedback ? (
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-xs text-slate-800">
-                          Your Submitted Experience Rating:
-                        </span>
-                        <div className="flex gap-1">
-                          {Array.from({ length: 5 }, (_, i) => (
-                            <Star
-                              key={i}
-                              size={15}
-                              className={i < feedback.rating ? "text-amber-500 fill-amber-500" : "text-slate-300"}
-                            />
-                          ))}
-                        </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-slate-700">Citizen Rating Submitted:</span>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <Star
+                            key={i}
+                            size={13}
+                            className={i < feedback.rating ? "text-amber-500 fill-amber-500" : "text-slate-300"}
+                          />
+                        ))}
                       </div>
-                      {feedback.comment && (
-                        <p className="text-xs text-slate-600 italic">
-                          &quot;{feedback.comment}&quot;
-                        </p>
-                      )}
                     </div>
                   ) : (
-                    <form onSubmit={(e) => handleFeedbackSubmit(c.id, e)} className="space-y-3">
-                      <div className="flex justify-between items-center flex-wrap gap-2">
-                        <span className="text-xs font-bold text-slate-800">
-                          Rate your resolution experience
-                        </span>
-                        <div className="flex gap-1">
+                    <form onSubmit={(e) => handleFeedbackSubmit(c.id, e)} className="space-y-2.5">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-semibold text-slate-800">Rate Service Experience</span>
+                        <div className="flex gap-0.5">
                           {Array.from({ length: 5 }, (_, i) => {
                             const starNum = i + 1;
                             const isFilled = starNum <= curRating;
                             return (
-                              <motion.button
-                                whileHover={{ scale: 1.25 }}
-                                whileTap={{ scale: 0.9 }}
+                              <button
                                 key={starNum}
                                 type="button"
                                 className="p-0.5 cursor-pointer"
                                 onClick={() => setTicketRatingField(c.id, "rating", starNum)}
                               >
                                 <Star
-                                  size={18}
+                                  size={15}
                                   className={isFilled ? "text-amber-500 fill-amber-500" : "text-slate-300"}
                                 />
-                              </motion.button>
+                              </button>
                             );
                           })}
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-[11px] font-semibold text-slate-500 mb-1">Speed</label>
-                          <select
-                            className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-600"
-                            value={ratingStates[c.id]?.speed || "Very fast"}
-                            onChange={(e) => setTicketRatingField(c.id, "speed", e.target.value)}
-                          >
-                            <option value="Very fast">Very fast</option>
-                            <option value="Acceptable">Acceptable</option>
-                            <option value="Too slow">Too slow</option>
-                          </select>
-                        </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <select
+                          className="text-xs px-2 py-1 bg-white border border-slate-200 rounded outline-none"
+                          value={ratingStates[c.id]?.speed || "Very fast"}
+                          onChange={(e) => setTicketRatingField(c.id, "speed", e.target.value)}
+                        >
+                          <option value="Very fast">Speed: Fast</option>
+                          <option value="Acceptable">Speed: Acceptable</option>
+                          <option value="Too slow">Speed: Slow</option>
+                        </select>
 
-                        <div>
-                          <label className="block text-[11px] font-semibold text-slate-500 mb-1">Communication</label>
-                          <select
-                            className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-600"
-                            value={ratingStates[c.id]?.comm || "Clear"}
-                            onChange={(e) => setTicketRatingField(c.id, "comm", e.target.value)}
-                          >
-                            <option value="Clear">Clear</option>
-                            <option value="Okay">Okay</option>
-                            <option value="Poor">Poor</option>
-                          </select>
-                        </div>
+                        <select
+                          className="text-xs px-2 py-1 bg-white border border-slate-200 rounded outline-none"
+                          value={ratingStates[c.id]?.comm || "Clear"}
+                          onChange={(e) => setTicketRatingField(c.id, "comm", e.target.value)}
+                        >
+                          <option value="Clear">Comm: Clear</option>
+                          <option value="Okay">Comm: Average</option>
+                          <option value="Poor">Comm: Poor</option>
+                        </select>
                       </div>
 
                       <input
                         type="text"
-                        className="w-full text-xs px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-600"
-                        placeholder="Add an optional comment about the resolution..."
+                        className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-200 rounded outline-none"
+                        placeholder="Optional remarks..."
                         value={ratingStates[c.id]?.comment || ""}
                         onChange={(e) => setTicketRatingField(c.id, "comment", e.target.value)}
                       />
 
-                      <motion.button
-                        whileTap={{ scale: 0.98 }}
+                      <button
                         type="submit"
-                        className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm cursor-pointer"
+                        className="px-3 py-1 rounded text-xs font-medium bg-slate-900 text-white cursor-pointer"
                       >
                         Submit Feedback
-                      </motion.button>
+                      </button>
                     </form>
                   )}
                 </div>
               )}
 
               {/* Expandable Audit Log */}
-              <div className="mt-3.5 pt-2.5 border-t border-slate-100">
+              <div className="pt-2 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => toggleExpand(c.id)}
-                  className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer"
                 >
-                  <History size={13} />
-                  {isExpanded ? "Hide Audit Trail" : "View Activity Trail (" + (c.events?.length || 1) + " events)"}
-                  {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                  <History size={12} />
+                  <span>{isExpanded ? "Hide activity trail" : "Activity trail (" + (c.events?.length || 1) + " events)"}</span>
+                  {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                 </button>
 
                 {isExpanded && (
-                  <div className="mt-2.5 p-3 bg-slate-50 rounded-xl text-xs space-y-1.5">
-                    <div className="font-bold text-slate-700 mb-1">Audit Log History:</div>
+                  <div className="mt-2 p-2.5 bg-slate-50 rounded border border-slate-200 text-xs space-y-1 font-mono">
                     {c.events && c.events.length > 0 ? (
                       c.events.map((evt, idx) => (
-                        <div key={evt.id || idx} className="flex justify-between py-1 border-b border-dashed border-slate-200 last:border-b-0">
-                          <div>
-                            <span className="font-bold text-slate-900 capitalize">
-                              {evt.to_status.replace("_", " ")}
-                            </span>
-                            {evt.note && <span className="text-slate-500"> — {evt.note}</span>}
-                          </div>
-                          <span className="text-slate-400 text-[11px]">
-                            {new Date(evt.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })},{" "}
-                            {new Date(evt.created_at).toLocaleDateString([], { month: "short", day: "numeric" })}
+                        <div key={evt.id || idx} className="flex justify-between py-0.5 border-b border-dashed border-slate-200 last:border-b-0">
+                          <span className="text-slate-800 uppercase text-[10px]">
+                            {evt.to_status.replace("_", " ")} {evt.note ? "— " + evt.note : ""}
+                          </span>
+                          <span className="text-slate-400 text-[10px]">
+                            {new Date(evt.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                           </span>
                         </div>
                       ))
                     ) : (
-                      <div className="text-slate-400">No additional events recorded.</div>
+                      <div className="text-slate-400">No events logged.</div>
                     )}
                   </div>
                 )}
@@ -593,45 +547,43 @@ export default function MyComplaints({ onFileNew }) {
 
       {/* Dispute Modal */}
       {reopenModalId && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl"
+            className="bg-white rounded-lg max-w-md w-full p-5 shadow-xl border border-slate-200"
           >
-            <h3 className="text-base font-bold text-rose-700 mb-1">
-              Reopen Grievance
+            <h3 className="text-sm font-bold text-slate-900 mb-1">
+              Reopen Grievance Ticket
             </h3>
-            <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-              Tell the municipal administration why the resolution is incomplete. This ticket will be reopened and flagged to the administrator.
+            <p className="text-xs text-slate-500 mb-3">
+              Provide details explaining why the remediation is inadequate. This will escalate the ticket back to administration.
             </p>
 
-            <form onSubmit={handleReopenSubmit} className="space-y-4">
+            <form onSubmit={handleReopenSubmit} className="space-y-3">
               <textarea
-                className="w-full text-xs p-3 bg-white border border-slate-200 rounded-xl outline-none focus:border-rose-600 min-h-[90px]"
+                className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded outline-none focus:border-slate-900 min-h-[80px]"
                 required
-                placeholder="e.g. The pothole was only filled with gravel, not leveled with bitumen..."
+                placeholder="Reason for reopening..."
                 value={disputeReason}
                 onChange={(e) => setDisputeReason(e.target.value)}
               />
 
               <div className="flex justify-end gap-2">
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
+                <button
                   type="button"
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+                  className="px-3 py-1.5 rounded text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
                   onClick={() => setReopenModalId(null)}
                 >
                   Cancel
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
+                </button>
+                <button
                   type="submit"
                   disabled={confirmingId === reopenModalId}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white cursor-pointer"
+                  className="px-3 py-1.5 rounded text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white cursor-pointer"
                 >
-                  {confirmingId === reopenModalId ? "Reopening..." : "Confirm Reopen"}
-                </motion.button>
+                  {confirmingId === reopenModalId ? "Processing..." : "Confirm Reopen"}
+                </button>
               </div>
             </form>
           </motion.div>

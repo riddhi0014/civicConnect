@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import {
   ArrowRight,
   Shield,
@@ -20,6 +21,7 @@ import {
   Check
 } from "lucide-react";
 import { motion } from "framer-motion";
+import CategoryIcon from "../components/CategoryIcon";
 
 const ROTATING_ISSUES = [
   { text: "Crater pothole on main artery", cat: "Roads", icon: "🛣️", priority: "High", dept: "Public Works" },
@@ -44,6 +46,7 @@ const CATEGORIES_DATA = [
 
 export default function Home() {
   const { user, role } = useAuth();
+  const { t } = useTranslation();
   const [tickerIndex, setTickerIndex] = useState(0);
   const [simulatedStage, setSimulatedStage] = useState("resolved");
 
@@ -71,20 +74,16 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 bg-white border border-blue-200 rounded-full px-4 py-1.5 shadow-sm mb-6">
                 <span className="w-2 h-2 rounded-full bg-emerald-600 urgent-pulse-dot" />
                 <span className="text-xs font-bold text-blue-900 tracking-wider">
-                  CIVIC REDRESSAL PROTOCOL · LIVE ACROSS 20 WARDS
+                  {t("home.badge")}
                 </span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
-                Civic complaints resolved with{" "}
-                <span className="bg-gradient-to-r from-blue-700 to-cyan-600 bg-clip-text text-transparent">
-                  transparent proof
-                </span>{" "}
-                &amp; citizen authority.
+                {t("home.heroTitle")}
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-xl">
-                Lodge grievances across 10 municipal departments. AI dispatches tickets by workload, officers must upload photographic proof, and cases only close when citizens confirm.
+                {t("home.heroSubtitle")}
               </p>
 
               {/* Dynamic Rotating Case Ticker with Micro-Interaction */}
@@ -93,12 +92,12 @@ export default function Home() {
                 className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between mb-8 shadow-sm hover:shadow-md transition-shadow max-w-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="text-2xl w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                    {activeIssue.icon}
+                  <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                    <CategoryIcon name={activeIssue.cat} icon={activeIssue.icon} size={22} />
                   </div>
                   <div>
                     <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      Recent Case · {activeIssue.cat} ({activeIssue.dept})
+                      {t("home.recentCase")} · {activeIssue.cat} ({activeIssue.dept})
                     </div>
                     <div className="text-sm font-bold text-slate-900 mt-0.5">
                       &quot;{activeIssue.text}&quot;
@@ -120,7 +119,7 @@ export default function Home() {
                       to={role === "officer" ? "/officer" : role === "admin" ? "/admin" : "/citizen"}
                       className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-sm hover:shadow-md transition-all"
                     >
-                      Open {role === "officer" ? "Officer Queue" : role === "admin" ? "Admin Console" : "Citizen Portal"}
+                      {role === "officer" ? t("nav.officerQueue") : role === "admin" ? t("nav.adminConsole") : t("nav.citizenPortal")}
                       <ArrowRight size={17} />
                     </Link>
                   </motion.div>
@@ -131,7 +130,7 @@ export default function Home() {
                         to="/register"
                         className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-sm hover:shadow-md transition-all"
                       >
-                        File a Grievance
+                        {t("home.fileGrievance")}
                         <ArrowRight size={17} />
                       </Link>
                     </motion.div>
@@ -140,7 +139,7 @@ export default function Home() {
                         to="/login"
                         className="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-sm px-6 py-3.5 rounded-xl shadow-sm transition-all"
                       >
-                        Staff &amp; Officer Portal
+                        {t("home.staffPortal")}
                       </Link>
                     </motion.div>
                   </>
@@ -151,15 +150,15 @@ export default function Home() {
               <div className="flex gap-6 mt-10 pt-6 border-t border-slate-200 flex-wrap text-xs font-semibold text-slate-700">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={16} className="text-emerald-600" />
-                  <span>3-Layer RBAC</span>
+                  <span>{t("home.trustRbac")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock size={16} className="text-blue-600" />
-                  <span>24h–7d SLA Guarantees</span>
+                  <span>{t("home.trustSla")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Camera size={16} className="text-amber-600" />
-                  <span>Mandatory Photo Proof</span>
+                  <span>{t("home.trustProof")}</span>
                 </div>
               </div>
             </div>
@@ -331,9 +330,9 @@ export default function Home() {
                   className="bg-white border border-slate-200 hover:border-blue-500 rounded-2xl p-5 flex flex-col justify-between h-full shadow-sm hover:shadow-md transition-all group"
                 >
                   <div>
-                    <span className="text-3xl inline-block mb-3 group-hover:scale-110 transition-transform">
-                      {cat.icon}
-                    </span>
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <CategoryIcon name={cat.name} icon={cat.icon} size={22} />
+                    </div>
                     <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                       {cat.name}
                     </h3>

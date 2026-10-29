@@ -7,15 +7,26 @@ export default {
   theme: {
     extend: {
       colors: {
+        pin: {
+          red: "#e60023",
+          redHover: "#ad081b",
+          redLight: "#fde8ea",
+          dark: "#111111",
+          gray: "#767676",
+          pill: "#e9e9e9",
+          pillHover: "#d9d9d9",
+          surface: "#f7f7f7",
+          border: "#e5e5e5",
+        },
         primary: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
+          50: "#fde8ea",
+          100: "#fbd1d5",
+          200: "#f7a3ab",
+          500: "#e60023",
+          600: "#c7001f",
+          700: "#a6001a",
+          800: "#850015",
+          900: "#630010",
         }
       },
       animation: {

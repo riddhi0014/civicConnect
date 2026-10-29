@@ -31,7 +31,7 @@ export default function StatusStepper({ status, closedReason }) {
         {/* Dynamic active progress fill */}
         <div
           className={"absolute top-3.5 left-5 h-0.5 z-0 transition-all duration-300 " +
-            (isReopened ? "bg-amber-600" : "bg-blue-600")}
+            (isReopened ? "bg-amber-500" : "bg-pin-dark")}
           style={{
             width: Math.min(100, Math.max(0, ((currentStepNum - 1) / (STEPS.length - 1)) * 100)) + "%"
           }}
@@ -47,14 +47,14 @@ export default function StatusStepper({ status, closedReason }) {
               <div
                 className={"w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all " +
                   (isCompleted
-                    ? "bg-blue-600 text-white border-2 border-blue-600 shadow-sm"
+                    ? "bg-pin-dark text-white border-2 border-pin-dark shadow-xs"
                     : isCurrent
                     ? (isReopened
-                      ? "bg-amber-50 text-amber-700 border-2 border-amber-600 ring-2 ring-amber-100"
+                      ? "bg-amber-50 text-amber-800 border-2 border-amber-500 ring-2 ring-amber-100"
                       : status === "resolved"
                       ? "bg-emerald-50 text-emerald-700 border-2 border-emerald-600 ring-2 ring-emerald-100"
-                      : "bg-blue-50 text-blue-700 border-2 border-blue-600 ring-2 ring-blue-100")
-                    : "bg-white text-slate-400 border-2 border-slate-200")}
+                      : "bg-pin-pill text-pin-dark border-2 border-pin-dark ring-2 ring-pin-border")
+                    : "bg-white text-pin-gray border-2 border-pin-border")}
               >
                 {isCompleted ? (
                   <Check size={13} strokeWidth={3} />

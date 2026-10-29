@@ -13,6 +13,7 @@ import {
   FileCheck
 } from "lucide-react";
 import { motion } from "framer-motion";
+import CategoryIcon from "../../components/CategoryIcon";
 
 export default function FileComplaint({ onSuccess }) {
   const { profile } = useAuth();
@@ -214,12 +215,12 @@ export default function FileComplaint({ onSuccess }) {
         )}
 
         <motion.button
-          whileTap={{ scale: 0.98 }}
+          whileTap={{ scale: 0.96 }}
           onClick={() => onSuccess && onSuccess(successResult.complaint)}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm cursor-pointer"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold bg-pin-red hover:bg-pin-redHover text-white shadow-xs cursor-pointer transition-colors"
         >
           Proceed to My Complaints
-          <ArrowRight size={16} />
+          <ArrowRight size={15} />
         </motion.button>
       </motion.div>
     );
@@ -228,31 +229,43 @@ export default function FileComplaint({ onSuccess }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
       {/* Step 1: Category Picker */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-slate-900 mb-1">
+      <div className="bg-white border border-pin-border rounded-2xl p-6 sm:p-7 shadow-xs">
+        <h2 className="text-xl font-black text-pin-dark mb-1">
           1. Select Grievance Category
         </h2>
-        <p className="text-xs text-slate-400 mb-5">
+        <p className="text-xs text-pin-gray mb-5">
           Pick the municipal category best matching your issue
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
           {categories.map((cat) => {
             const isSelected = cat.id === selectedCategoryId;
             return (
               <motion.button
                 key={cat.id}
                 type="button"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.96 }}
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => setSelectedCategoryId(cat.id)}
-                className={"p-3.5 rounded-xl border flex flex-col items-center text-center gap-1.5 transition-all cursor-pointer " +
+                className={"p-4 sm:p-5 rounded-2xl border flex flex-col items-center text-center justify-between gap-3 transition-all cursor-pointer group shadow-sm hover:shadow-md " +
                   (isSelected
-                    ? "bg-blue-50 border-blue-600 text-blue-700 shadow-sm ring-2 ring-blue-100"
-                    : "bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-slate-50")}
+                    ? "bg-white border-blue-600 ring-2 ring-blue-500/20 text-slate-900 shadow-md"
+                    : "bg-white border-slate-200 hover:border-blue-400 text-slate-800")}
               >
-                <span className="text-2xl">{cat.icon || "📋"}</span>
-                <span className="text-xs font-bold">{cat.name}</span>
+                <div
+                  className={"w-11 h-11 rounded-xl flex items-center justify-center transition-all group-hover:scale-110 " +
+                    (isSelected
+                      ? "bg-blue-600 text-white shadow-xs"
+                      : "bg-blue-50 text-blue-700")}
+                >
+                  <CategoryIcon name={cat.name} icon={cat.icon} size={22} />
+                </div>
+                <span
+                  className={"text-xs font-bold transition-colors " +
+                    (isSelected ? "text-blue-700 font-extrabold" : "text-slate-800 group-hover:text-blue-600")}
+                >
+                  {cat.name}
+                </span>
               </motion.button>
             );
           })}
@@ -260,12 +273,12 @@ export default function FileComplaint({ onSuccess }) {
       </div>
 
       {/* Step 2: Grievance Form */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-slate-900 mb-1">
+      <div className="bg-white border border-pin-border rounded-2xl p-6 sm:p-7 shadow-xs">
+        <h2 className="text-xl font-black text-pin-dark mb-1">
           2. Describe the Problem
         </h2>
-        <p className="text-xs text-slate-400 mb-5">
-          Selected Category: <b className="text-slate-700">{selectedCategory?.name}</b>
+        <p className="text-xs text-pin-gray mb-5">
+          Selected Category: <b className="text-pin-dark">{selectedCategory?.name}</b>
         </p>
 
         {error && (
@@ -278,12 +291,12 @@ export default function FileComplaint({ onSuccess }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {subcategories.length > 0 && (
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="subcategory">
+              <label className="block text-xs font-semibold text-pin-dark mb-1.5" htmlFor="subcategory">
                 Specific Sub-type
               </label>
               <select
                 id="subcategory"
-                className="w-full px-3.5 py-2.5 text-xs text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600"
+                className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red"
                 value={subcategoryId}
                 onChange={(e) => setSubcategoryId(e.target.value)}
               >
@@ -295,13 +308,13 @@ export default function FileComplaint({ onSuccess }) {
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="title">
+            <label className="block text-xs font-semibold text-pin-dark mb-1.5" htmlFor="title">
               Title / Summary
             </label>
             <input
               id="title"
               type="text"
-              className="w-full px-3.5 py-2.5 text-xs text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600"
+              className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red"
               required
               placeholder="e.g. Deep pothole causing accidents near Market Gate"
               value={title}
@@ -310,12 +323,12 @@ export default function FileComplaint({ onSuccess }) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="description">
+            <label className="block text-xs font-semibold text-pin-dark mb-1.5" htmlFor="description">
               Detailed Description
             </label>
             <textarea
               id="description"
-              className="w-full px-3.5 py-2.5 text-xs text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600 min-h-[90px]"
+              className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red min-h-[90px]"
               required
               placeholder="Provide exact details (duration of issue, safety risks, landmark references)..."
               value={description}
@@ -326,14 +339,14 @@ export default function FileComplaint({ onSuccess }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2">
               <div className="flex justify-between items-center mb-1.5">
-                <label className="text-xs font-semibold text-slate-700" htmlFor="locationText">
+                <label className="text-xs font-semibold text-pin-dark" htmlFor="locationText">
                   Location / Landmark
                 </label>
                 <button
                   type="button"
                   onClick={handleDetectLocation}
                   disabled={detectingGps}
-                  className="text-xs font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-semibold text-pin-red hover:text-pin-redHover inline-flex items-center gap-1 cursor-pointer"
                 >
                   <Compass size={13} />
                   {detectingGps ? "Locating..." : "Use My GPS"}
@@ -342,7 +355,7 @@ export default function FileComplaint({ onSuccess }) {
               <input
                 id="locationText"
                 type="text"
-                className="w-full px-3.5 py-2.5 text-xs text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600"
+                className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red"
                 required
                 placeholder="e.g. Main Road, opposite Green Park Gate 2"
                 value={locationText}
@@ -356,12 +369,12 @@ export default function FileComplaint({ onSuccess }) {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="ward">
+              <label className="block text-xs font-semibold text-pin-dark mb-1.5" htmlFor="ward">
                 Ward
               </label>
               <select
                 id="ward"
-                className="w-full px-3.5 py-2.5 text-xs text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600"
+                className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red"
                 value={ward}
                 onChange={(e) => setWard(e.target.value)}
               >
@@ -414,9 +427,9 @@ export default function FileComplaint({ onSuccess }) {
           </div>
 
           <motion.button
-            whileTap={{ scale: 0.98 }}
+            whileTap={{ scale: 0.96 }}
             type="submit"
-            className="w-full mt-4 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm cursor-pointer disabled:opacity-60"
+            className="w-full mt-4 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-400 text-white shadow-xs cursor-pointer disabled:opacity-60 transition-colors"
             disabled={submitting}
           >
             {submitting ? (
@@ -427,7 +440,7 @@ export default function FileComplaint({ onSuccess }) {
             ) : (
               <>
                 Submit Complaint
-                <ArrowRight size={16} />
+                <ArrowRight size={15} />
               </>
             )}
           </motion.button>

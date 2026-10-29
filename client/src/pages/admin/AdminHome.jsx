@@ -24,6 +24,7 @@ import {
   MapPin
 } from "lucide-react";
 import { motion } from "framer-motion";
+import CategoryIcon from "../../components/CategoryIcon";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -419,8 +420,10 @@ export default function AdminHome() {
                           (isReopened ? "border-l-4 border-l-pink-600" : "border-l-4 border-l-rose-600")}
                       >
                         <div className="flex justify-between items-start flex-wrap gap-2 mb-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl">{ticket.category?.icon || "📋"}</span>
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
+                              <CategoryIcon name={ticket.category?.name} icon={ticket.category?.icon} size={18} />
+                            </div>
                             <div>
                               <span className="font-mono text-xs font-bold text-slate-400">#{ticket.id.slice(0, 8)}</span>
                               <span className="text-sm font-bold text-slate-900 ml-2">{ticket.title}</span>
