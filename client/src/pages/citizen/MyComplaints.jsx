@@ -154,18 +154,18 @@ export default function MyComplaints({ onFileNew }) {
 
   if (loading) {
     return (
-      <div className="text-center py-16 text-slate-400">
-        <Loader2 size={24} className="animate-spin text-slate-600 mx-auto mb-2" />
-        <p className="text-xs font-mono uppercase tracking-widest text-slate-500">Loading records...</p>
+      <div style={{ textAlign: "center", padding: "4rem 1rem", color: "var(--text-light)" }}>
+        <Loader2 size={24} className="animate-spin" style={{ color: "var(--text-secondary)", margin: "0 auto 8px auto" }} />
+        <p style={{ fontSize: "0.75rem", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.05em" }}>Loading records...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Filters Toolbar: Sharp, Clean Monospace Edge */}
-      <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
-        <div className="flex gap-1.5 flex-wrap">
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {/* Filters Toolbar */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.75rem" }}>
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
           {[
             { key: "all", label: "All (" + complaints.length + ")" },
             { key: "active", label: "In Progress (" + complaints.filter((c) => ["submitted", "assigned", "in_progress", "reopened"].includes(c.status)).length + ")" },
@@ -176,10 +176,7 @@ export default function MyComplaints({ onFileNew }) {
               key={tab.key}
               whileTap={{ scale: 0.98 }}
               onClick={() => setFilter(tab.key)}
-              className={"px-3 py-1.5 rounded text-xs font-medium tracking-wide transition-colors cursor-pointer " +
-                (filter === tab.key
-                  ? "bg-slate-900 text-white shadow-xs font-semibold"
-                  : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200")}
+              className={filter === tab.key ? "btn btn-dark" : "btn btn-secondary"}
             >
               {tab.label}
             </motion.button>
@@ -189,14 +186,14 @@ export default function MyComplaints({ onFileNew }) {
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={fetchComplaints}
-          className="px-3 py-1.5 rounded text-xs font-medium bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 cursor-pointer transition-colors shadow-xs"
+          className="btn btn-secondary"
         >
           ↻ Refresh
         </motion.button>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded p-3 text-xs font-mono">
+        <div className="alert alert-danger" style={{ fontFamily: "monospace", fontSize: "0.75rem" }}>
           {error}
         </div>
       )}
@@ -206,15 +203,16 @@ export default function MyComplaints({ onFileNew }) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-white border border-slate-200 rounded-lg text-center py-16 px-6"
+          className="card"
+          style={{ textAlign: "center", padding: "4rem 1.5rem" }}
         >
-          <div className="w-10 h-10 rounded bg-slate-100 text-slate-400 inline-flex items-center justify-center mb-3">
+          <div style={{ width: "2.5rem", height: "2.5rem", borderRadius: "var(--radius-sm)", background: "var(--bg-surface-alt)", color: "var(--text-light)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: "0.75rem" }}>
             <FileQuestion size={20} />
           </div>
-          <h3 className="text-sm font-semibold text-slate-900 mb-1">
+          <h3 style={{ fontSize: "0.875rem", fontWeight: 700, color: "var(--text-dark)", marginBottom: "4px" }}>
             No records found
           </h3>
-          <p className="text-xs text-slate-500 mb-4 max-w-xs mx-auto">
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "1rem", maxWidth: "20rem", margin: "0 auto 1rem auto" }}>
             {filter === "all"
               ? "You have not logged any civic complaints yet."
               : "No records match the selected filter view."}
@@ -223,7 +221,7 @@ export default function MyComplaints({ onFileNew }) {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={onFileNew}
-              className="px-4 py-2 rounded text-xs font-medium bg-slate-900 hover:bg-slate-800 text-white cursor-pointer transition-colors"
+              className="btn btn-dark"
             >
               File a Grievance
             </motion.button>
@@ -236,7 +234,7 @@ export default function MyComplaints({ onFileNew }) {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="flex flex-col gap-3"
+        style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
       >
         {filteredComplaints.map((c) => {
           const isExpanded = expandedId === c.id;
@@ -258,133 +256,131 @@ export default function MyComplaints({ onFileNew }) {
             <motion.div
               key={c.id}
               variants={cardVariants}
-              className="bg-white border border-slate-200 rounded-lg p-4 sm:p-5 shadow-xs hover:border-slate-300 transition-all relative space-y-3"
+              className="complaint-ticket-card"
             >
-              {/* Header Meta: Flat Software Log Style */}
-              <div className="flex justify-between items-center text-xs flex-wrap gap-2 pb-2.5 border-b border-slate-100">
-                <div className="flex items-center gap-2 font-mono">
-                  <span className="text-slate-900 font-bold">#{c.id.slice(0, 8)}</span>
-                  <span className="text-slate-300">/</span>
-                  <div className="flex items-center gap-1.5 font-sans">
-                    <CategoryIcon name={c.category?.name} icon={c.category?.icon} size={15} className="text-slate-600" />
-                    <span className="text-slate-600 uppercase tracking-wider text-[11px] font-semibold">
+              {/* Header Meta */}
+              <div className="complaint-card-meta">
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "monospace" }}>
+                  <span style={{ color: "var(--text-dark)", fontWeight: 700 }}>#{c.id.slice(0, 8)}</span>
+                  <span style={{ color: "var(--border-color)" }}>/</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-family)" }}>
+                    <CategoryIcon name={c.category?.name} icon={c.category?.icon} size={15} style={{ color: "var(--text-secondary)" }} />
+                    <span style={{ color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "11px", fontWeight: 700 }}>
                       {c.category?.name || "Incident"}
                     </span>
                   </div>
                   {c.subcategory && (
-                    <span className="text-slate-400 font-sans text-[11px]">
+                    <span style={{ color: "var(--text-light)", fontFamily: "var(--font-family)", fontSize: "11px" }}>
                       · {c.subcategory.name}
                     </span>
                   )}
                 </div>
 
-                <div className="flex gap-2 items-center">
-                  {isHighPriority && (
-                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-red-600 text-white">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                  {isHighPriority ? (
+                    <span className="badge badge-high-fill">
+                      <span className="urgent-pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#ffffff" }} />
                       Urgent
                     </span>
-                  )}
-
-                  {!isHighPriority && (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-slate-100 text-slate-700">
+                  ) : (
+                    <span className="badge badge-default">
                       {c.priority}
                     </span>
                   )}
 
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-slate-900 text-white">
+                  <span className="badge badge-status">
                     {c.status.replace("_", " ")}
                   </span>
                 </div>
               </div>
 
               {/* Title & Description */}
-              <div className="space-y-0.5">
-                <h3 className="text-sm font-semibold text-slate-900 tracking-tight">
+              <div style={{ marginBottom: "0.5rem" }}>
+                <h3 style={{ fontSize: "0.875rem", fontWeight: 700, color: "var(--text-dark)", letterSpacing: "-0.01em", marginBottom: "2px" }}>
                   {c.title}
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
                   {c.description}
                 </p>
               </div>
 
               {/* Clean Minimalist Triage Note */}
               {c.ai_summary && (
-                <div className="bg-slate-50 border-l-2 border-slate-900 p-2.5 rounded-r text-xs text-slate-600">
-                  <span className="font-mono text-[10px] text-slate-400 uppercase tracking-widest block mb-0.5">Automated Triage Assessment</span>
-                  <p className="italic text-slate-700">&quot;{c.ai_summary}&quot;</p>
+                <div style={{ backgroundColor: "var(--bg-surface)", borderLeft: "2px solid var(--text-dark)", padding: "0.5rem 0.75rem", borderRadius: "0 6px 6px 0", fontSize: "0.75rem", marginBottom: "0.5rem" }}>
+                  <span style={{ fontFamily: "monospace", fontSize: "10px", color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "2px" }}>Automated Triage Assessment</span>
+                  <p style={{ fontStyle: "italic", color: "var(--text-primary)" }}>&quot;{c.ai_summary}&quot;</p>
                 </div>
               )}
 
               {/* Metadata Line */}
-              <div className="flex flex-wrap items-center gap-y-1 gap-x-3 text-[11px] text-slate-500 pt-1">
-                <div className="flex items-center gap-1">
-                  <MapPin size={12} className="text-slate-400" />
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", fontSize: "11px", color: "var(--text-muted)", paddingTop: "4px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                  <MapPin size={12} style={{ color: "var(--text-light)" }} />
                   <span>{c.location_text} {c.ward ? "(" + c.ward + ")" : ""}</span>
                 </div>
                 <span>·</span>
-                <div className="flex items-center gap-1">
-                  <Calendar size={12} className="text-slate-400" />
+                <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                  <Calendar size={12} style={{ color: "var(--text-light)" }} />
                   <span>Filed: {new Date(c.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</span>
                 </div>
                 {c.due_at && (
                   <>
                     <span>·</span>
-                    <div className="flex items-center gap-1">
-                      <Clock size={12} className="text-slate-400" />
+                    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                      <Clock size={12} style={{ color: "var(--text-light)" }} />
                       <span>SLA: {new Date(c.due_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
                     </div>
                   </>
                 )}
                 {c.assigned_officer && (
-                  <div className="flex items-center gap-1 font-medium text-slate-900 ml-auto bg-slate-100 px-2 py-0.5 rounded">
-                    <UserCheck size={12} className="text-slate-600" />
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", fontWeight: 600, color: "var(--text-dark)", marginLeft: "auto", background: "var(--bg-surface-alt)", padding: "2px 8px", borderRadius: "4px" }}>
+                    <UserCheck size={12} style={{ color: "var(--text-secondary)" }} />
                     <span>{c.assigned_officer.full_name}</span>
                   </div>
                 )}
               </div>
 
               {/* Status Stepper Tracker */}
-              <div className="pt-2 border-t border-slate-100">
+              <div style={{ paddingTop: "0.5rem", borderTop: "1px solid var(--border-subtle)" }}>
                 <StatusStepper status={c.status} closedReason={c.closed_reason} />
               </div>
 
               {/* Problem Photo Thumbnail */}
               {c.photo_url && (
-                <div className="mt-2 flex items-center gap-2">
+                <div style={{ marginTop: "0.5rem", display: "flex", alignItems: "center", gap: "8px" }}>
                   <img
                     src={c.photo_url}
                     alt="Problem evidence"
-                    className="w-14 h-10 rounded object-cover border border-slate-200 cursor-pointer hover:opacity-85 transition-opacity"
+                    style={{ width: "3.5rem", height: "2.5rem", borderRadius: "4px", objectFit: "cover", border: "1px solid var(--border-color)", cursor: "pointer" }}
                     onClick={() => window.open(c.photo_url, "_blank")}
                   />
-                  <span className="text-[11px] text-slate-500 font-mono">Attached Field Evidence</span>
+                  <span style={{ fontSize: "11px", color: "var(--text-muted)", fontFamily: "monospace" }}>Attached Field Evidence</span>
                 </div>
               )}
 
               {/* Resolution Proof Card */}
               {resolution && (
-                <div className="bg-slate-50 border border-slate-200 rounded p-3 mt-3 space-y-2">
-                  <div className="text-slate-900 font-semibold text-xs flex items-center gap-1.5">
-                    <CheckCircle size={14} className="text-emerald-600" /> Resolution Remediation Report
+                <div style={{ backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-color)", borderRadius: "var(--radius-sm)", padding: "0.75rem", marginTop: "0.75rem" }}>
+                  <div style={{ color: "var(--text-dark)", fontWeight: 700, fontSize: "0.75rem", display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+                    <CheckCircle size={14} style={{ color: "var(--color-success)" }} /> Resolution Remediation Report
                   </div>
                   {resolution.note && (
-                    <p className="text-slate-700 text-xs italic">
+                    <p style={{ color: "var(--text-primary)", fontSize: "0.75rem", fontStyle: "italic", marginBottom: "6px" }}>
                       &quot;{resolution.note}&quot;
                     </p>
                   )}
                   {resolution.after_photo_url && (
-                    <div className="flex items-center gap-2">
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       <img
                         src={resolution.after_photo_url}
                         alt="Resolution proof"
-                        className="w-24 h-16 object-cover rounded border border-slate-300 cursor-pointer"
+                        style={{ width: "6rem", height: "4rem", objectFit: "cover", borderRadius: "4px", border: "1px solid var(--border-color)", cursor: "pointer" }}
                         onClick={() => window.open(resolution.after_photo_url, "_blank")}
                       />
                       <button
                         type="button"
                         onClick={() => window.open(resolution.after_photo_url, "_blank")}
-                        className="px-2.5 py-1 rounded text-[11px] font-medium bg-white text-slate-700 border border-slate-300 inline-flex items-center gap-1 cursor-pointer"
+                        className="btn btn-secondary btn-sm"
                       >
                         <ExternalLink size={12} /> Inspect Proof
                       </button>
@@ -395,22 +391,22 @@ export default function MyComplaints({ onFileNew }) {
 
               {/* Citizen Confirmation Panel */}
               {isResolved && (
-                <div className="bg-amber-50/50 border border-amber-200 rounded p-3 mt-3 flex justify-between items-center flex-wrap gap-3">
+                <div style={{ backgroundColor: "var(--color-warning-bg)", border: "1px solid var(--color-warning-border)", borderRadius: "var(--radius-sm)", padding: "0.75rem", marginTop: "0.75rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
                   <div>
-                    <h4 className="text-xs font-semibold text-slate-900">
+                    <h4 style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-dark)" }}>
                       Verify Resolution Outcome
                     </h4>
-                    <p className="text-[11px] text-slate-500">
+                    <p style={{ fontSize: "11px", color: "var(--text-secondary)" }}>
                       Confirm fix or flag unsatisfactory resolution within 72 hours.
                     </p>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div style={{ display: "flex", gap: "8px" }}>
                     <motion.button
                       whileTap={{ scale: 0.98 }}
                       disabled={confirmingId === c.id}
                       onClick={() => handleConfirmFixed(c.id)}
-                      className="px-3 py-1.5 rounded text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center gap-1 cursor-pointer"
+                      className="btn btn-success"
                     >
                       <ThumbsUp size={12} /> Confirm Fixed
                     </motion.button>
@@ -419,7 +415,8 @@ export default function MyComplaints({ onFileNew }) {
                       whileTap={{ scale: 0.98 }}
                       disabled={confirmingId === c.id}
                       onClick={() => setReopenModalId(c.id)}
-                      className="px-3 py-1.5 rounded text-xs font-semibold bg-white text-rose-700 border border-rose-300 hover:bg-rose-50 inline-flex items-center gap-1 cursor-pointer"
+                      className="btn btn-secondary"
+                      style={{ color: "var(--color-danger-text)", borderColor: "var(--color-danger-border)" }}
                     >
                       <RotateCcw size={12} /> Reopen
                     </motion.button>
@@ -429,25 +426,28 @@ export default function MyComplaints({ onFileNew }) {
 
               {/* Rating & Feedback */}
               {(isResolved || isClosed) && (
-                <div className="bg-slate-50 border border-slate-200 rounded p-3 mt-3">
+                <div style={{ backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-color)", borderRadius: "var(--radius-sm)", padding: "0.75rem", marginTop: "0.75rem" }}>
                   {feedback ? (
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-slate-700">Citizen Rating Submitted:</span>
-                      <div className="flex gap-0.5">
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.75rem" }}>
+                      <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>Citizen Rating Submitted:</span>
+                      <div style={{ display: "flex", gap: "2px" }}>
                         {Array.from({ length: 5 }, (_, i) => (
                           <Star
                             key={i}
                             size={13}
-                            className={i < feedback.rating ? "text-amber-500 fill-amber-500" : "text-slate-300"}
+                            style={{
+                              color: i < feedback.rating ? "var(--color-warning)" : "var(--border-color)",
+                              fill: i < feedback.rating ? "var(--color-warning)" : "none"
+                            }}
                           />
                         ))}
                       </div>
                     </div>
                   ) : (
-                    <form onSubmit={(e) => handleFeedbackSubmit(c.id, e)} className="space-y-2.5">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="font-semibold text-slate-800">Rate Service Experience</span>
-                        <div className="flex gap-0.5">
+                    <form onSubmit={(e) => handleFeedbackSubmit(c.id, e)} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.75rem" }}>
+                        <span style={{ fontWeight: 700, color: "var(--text-dark)" }}>Rate Service Experience</span>
+                        <div style={{ display: "flex", gap: "2px" }}>
                           {Array.from({ length: 5 }, (_, i) => {
                             const starNum = i + 1;
                             const isFilled = starNum <= curRating;
@@ -455,12 +455,15 @@ export default function MyComplaints({ onFileNew }) {
                               <button
                                 key={starNum}
                                 type="button"
-                                className="p-0.5 cursor-pointer"
+                                style={{ background: "none", border: "none", padding: "2px", cursor: "pointer" }}
                                 onClick={() => setTicketRatingField(c.id, "rating", starNum)}
                               >
                                 <Star
                                   size={15}
-                                  className={isFilled ? "text-amber-500 fill-amber-500" : "text-slate-300"}
+                                  style={{
+                                    color: isFilled ? "var(--color-warning)" : "var(--border-color)",
+                                    fill: isFilled ? "var(--color-warning)" : "none"
+                                  }}
                                 />
                               </button>
                             );
@@ -468,9 +471,10 @@ export default function MyComplaints({ onFileNew }) {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2">
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
                         <select
-                          className="text-xs px-2 py-1 bg-white border border-slate-200 rounded outline-none"
+                          className="form-select"
+                          style={{ padding: "4px 8px", fontSize: "11px" }}
                           value={ratingStates[c.id]?.speed || "Very fast"}
                           onChange={(e) => setTicketRatingField(c.id, "speed", e.target.value)}
                         >
@@ -480,7 +484,8 @@ export default function MyComplaints({ onFileNew }) {
                         </select>
 
                         <select
-                          className="text-xs px-2 py-1 bg-white border border-slate-200 rounded outline-none"
+                          className="form-select"
+                          style={{ padding: "4px 8px", fontSize: "11px" }}
                           value={ratingStates[c.id]?.comm || "Clear"}
                           onChange={(e) => setTicketRatingField(c.id, "comm", e.target.value)}
                         >
@@ -492,7 +497,8 @@ export default function MyComplaints({ onFileNew }) {
 
                       <input
                         type="text"
-                        className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-200 rounded outline-none"
+                        className="form-input"
+                        style={{ padding: "6px 8px", fontSize: "11px" }}
                         placeholder="Optional remarks..."
                         value={ratingStates[c.id]?.comment || ""}
                         onChange={(e) => setTicketRatingField(c.id, "comment", e.target.value)}
@@ -500,7 +506,8 @@ export default function MyComplaints({ onFileNew }) {
 
                       <button
                         type="submit"
-                        className="px-3 py-1 rounded text-xs font-medium bg-slate-900 text-white cursor-pointer"
+                        className="btn btn-dark btn-sm"
+                        style={{ alignSelf: "flex-start" }}
                       >
                         Submit Feedback
                       </button>
@@ -510,11 +517,11 @@ export default function MyComplaints({ onFileNew }) {
               )}
 
               {/* Expandable Audit Log */}
-              <div className="pt-2 border-t border-slate-100">
+              <div style={{ paddingTop: "0.5rem", borderTop: "1px solid var(--border-subtle)", marginTop: "0.5rem" }}>
                 <button
                   type="button"
                   onClick={() => toggleExpand(c.id)}
-                  className="text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer"
+                  style={{ background: "none", border: "none", fontSize: "0.75rem", fontWeight: 600, color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "4px", cursor: "pointer" }}
                 >
                   <History size={12} />
                   <span>{isExpanded ? "Hide activity trail" : "Activity trail (" + (c.events?.length || 1) + " events)"}</span>
@@ -522,20 +529,20 @@ export default function MyComplaints({ onFileNew }) {
                 </button>
 
                 {isExpanded && (
-                  <div className="mt-2 p-2.5 bg-slate-50 rounded border border-slate-200 text-xs space-y-1 font-mono">
+                  <div style={{ marginTop: "8px", padding: "8px", backgroundColor: "var(--bg-surface)", borderRadius: "var(--radius-xs)", border: "1px solid var(--border-color)", fontSize: "11px", fontFamily: "monospace" }}>
                     {c.events && c.events.length > 0 ? (
                       c.events.map((evt, idx) => (
-                        <div key={evt.id || idx} className="flex justify-between py-0.5 border-b border-dashed border-slate-200 last:border-b-0">
-                          <span className="text-slate-800 uppercase text-[10px]">
+                        <div key={evt.id || idx} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px dashed var(--border-color)" }}>
+                          <span style={{ color: "var(--text-dark)", textTransform: "uppercase", fontSize: "10px" }}>
                             {evt.to_status.replace("_", " ")} {evt.note ? "— " + evt.note : ""}
                           </span>
-                          <span className="text-slate-400 text-[10px]">
+                          <span style={{ color: "var(--text-light)", fontSize: "10px" }}>
                             {new Date(evt.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                           </span>
                         </div>
                       ))
                     ) : (
-                      <div className="text-slate-400">No events logged.</div>
+                      <div style={{ color: "var(--text-light)" }}>No events logged.</div>
                     )}
                   </div>
                 )}
@@ -547,32 +554,34 @@ export default function MyComplaints({ onFileNew }) {
 
       {/* Dispute Modal */}
       {reopenModalId && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="modal-overlay">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg max-w-md w-full p-5 shadow-xl border border-slate-200"
+            className="modal-card"
           >
-            <h3 className="text-sm font-bold text-slate-900 mb-1">
+            <h3 className="modal-title">
               Reopen Grievance Ticket
             </h3>
-            <p className="text-xs text-slate-500 mb-3">
+            <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.75rem" }}>
               Provide details explaining why the remediation is inadequate. This will escalate the ticket back to administration.
             </p>
 
-            <form onSubmit={handleReopenSubmit} className="space-y-3">
-              <textarea
-                className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded outline-none focus:border-slate-900 min-h-[80px]"
-                required
-                placeholder="Reason for reopening..."
-                value={disputeReason}
-                onChange={(e) => setDisputeReason(e.target.value)}
-              />
+            <form onSubmit={handleReopenSubmit}>
+              <div className="form-group">
+                <textarea
+                  className="form-textarea"
+                  required
+                  placeholder="Reason for reopening..."
+                  value={disputeReason}
+                  onChange={(e) => setDisputeReason(e.target.value)}
+                />
+              </div>
 
-              <div className="flex justify-end gap-2">
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
                 <button
                   type="button"
-                  className="px-3 py-1.5 rounded text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+                  className="btn btn-secondary"
                   onClick={() => setReopenModalId(null)}
                 >
                   Cancel
@@ -580,7 +589,7 @@ export default function MyComplaints({ onFileNew }) {
                 <button
                   type="submit"
                   disabled={confirmingId === reopenModalId}
-                  className="px-3 py-1.5 rounded text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white cursor-pointer"
+                  className="btn btn-danger"
                 >
                   {confirmingId === reopenModalId ? "Processing..." : "Confirm Reopen"}
                 </button>

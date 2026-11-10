@@ -58,52 +58,52 @@ export default function PhotoUpload({ onPhotoUploaded, label = "Attach Photo (Op
   };
 
   return (
-    <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-1.5">{label}</label>
+    <div style={{ marginBottom: "1rem" }}>
+      <label className="form-label">{label}</label>
 
       {error && (
-        <div className="text-xs text-rose-600 mb-2 font-medium">
+        <div className="alert alert-danger" style={{ padding: "0.5rem 0.75rem", fontSize: "0.75rem" }}>
           {error}
         </div>
       )}
 
       {previewUrl ? (
-        <div className="relative inline-block rounded-xl overflow-hidden border border-slate-200">
+        <div className="photo-preview-wrap">
           <img
             src={previewUrl}
             alt="Upload Preview"
-            className="w-40 h-28 object-cover block"
+            className="photo-preview-img"
           />
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute top-2 right-2 w-6 h-6 rounded-full bg-slate-900/80 text-white flex items-center justify-center cursor-pointer hover:bg-slate-900 transition-colors"
+            className="photo-remove-btn"
             title="Remove photo"
           >
             <X size={14} />
           </button>
         </div>
       ) : (
-        <label className="flex flex-col items-center justify-center gap-2 p-5 border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-xl bg-slate-50 hover:bg-slate-100/50 cursor-pointer transition-colors text-center">
+        <label className="photo-upload-drop">
           <input
             type="file"
             accept="image/*"
-            className="hidden"
+            style={{ display: "none" }}
             disabled={uploading}
             onChange={handleFileChange}
           />
           {uploading ? (
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <Loader2 size={18} className="animate-spin text-blue-600" />
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.75rem", color: "var(--text-muted)" }}>
+              <Loader2 size={18} className="animate-spin" style={{ color: "var(--blue-primary)" }} />
               <span>Uploading to municipal storage...</span>
             </div>
           ) : (
             <>
-              <UploadCloud size={24} className="text-slate-400" />
-              <span className="text-xs font-semibold text-slate-700">
+              <UploadCloud size={24} style={{ color: "var(--text-light)" }} />
+              <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-dark)" }}>
                 Click to attach site photo
               </span>
-              <span className="text-[11px] text-slate-400">
+              <span style={{ fontSize: "0.6875rem", color: "var(--text-light)" }}>
                 Supports JPG, PNG up to 5MB (speeds up officer triage)
               </span>
             </>

@@ -35,41 +35,41 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto my-14 px-4">
+    <div className="auth-page-container">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow"
+        className="auth-card"
       >
-        <div className="text-center mb-7">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 inline-flex items-center justify-center mb-3">
+        <div className="auth-header">
+          <div className="auth-icon-circle" style={{ backgroundColor: "var(--blue-light)", color: "var(--blue-primary)" }}>
             <LogIn size={24} />
           </div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="auth-title">
             Sign in to CivicConnect
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="auth-subtitle">
             Direct access to your municipal portal & grievance records
           </p>
         </div>
 
         {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-lg p-3 text-sm flex gap-2.5 items-start mb-5">
-            <AlertCircle size={16} className="shrink-0 mt-0.5 text-rose-600" />
+          <div className="alert alert-danger">
+            <AlertCircle size={16} style={{ flexShrink: 0, marginTop: "2px" }} />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="email">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="email">
               Email Address
             </label>
             <input
               id="email"
               type="email"
-              className="w-full px-3.5 py-2.5 text-sm text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="form-input"
               required
               placeholder="e.g. citizen@gmail.com"
               value={email}
@@ -77,14 +77,14 @@ export default function Login() {
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="password">
+          <div className="form-group">
+            <label className="form-label" htmlFor="password">
               Password
             </label>
             <input
               id="password"
               type="password"
-              className="w-full px-3.5 py-2.5 text-sm text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="form-input"
               required
               placeholder="••••••••"
               value={password}
@@ -95,7 +95,8 @@ export default function Login() {
           <motion.button
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full mt-2 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-sm py-3 px-5 rounded-xl shadow-sm hover:shadow transition-all disabled:opacity-60 cursor-pointer"
+            className="btn btn-primary"
+            style={{ width: "100%", padding: "0.75rem", fontSize: "0.875rem", marginTop: "0.5rem" }}
             disabled={loading}
           >
             {loading ? (
@@ -112,18 +113,18 @@ export default function Login() {
           </motion.button>
         </form>
 
-        <div className="mt-6 pt-5 border-t border-slate-100 text-center text-sm text-slate-500">
+        <div className="auth-footer-prompt">
           New citizen?{" "}
-          <Link to="/register" className="text-blue-600 font-semibold hover:underline">
+          <Link to="/register" style={{ color: "var(--blue-primary)", fontWeight: 600 }}>
             Create an account
           </Link>
         </div>
       </motion.div>
 
       {/* Helper RBAC accounts guide */}
-      <div className="mt-5 bg-slate-50 border border-slate-200 border-dashed rounded-xl p-4 text-xs text-slate-600 space-y-1">
-        <div className="font-semibold text-slate-800 flex items-center gap-1.5 mb-1.5">
-          <ShieldCheck size={14} className="text-blue-600" /> Auto-Guided Portals:
+      <div className="auth-guide-box">
+        <div style={{ fontWeight: 700, color: "var(--text-dark)", display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+          <ShieldCheck size={14} style={{ color: "var(--blue-primary)" }} /> Auto-Guided Portals:
         </div>
         <div>• <b>Citizen</b>: citizen@gmail.com ➔ Guided to <code>/citizen</code></div>
         <div>• <b>Officer</b>: officer.roads@civicconnect.org ➔ Guided to <code>/officer</code></div>

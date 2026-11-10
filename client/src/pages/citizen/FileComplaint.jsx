@@ -167,9 +167,9 @@ export default function FileComplaint({ onSuccess }) {
 
   if (loadingCategories) {
     return (
-      <div className="text-center py-12 text-slate-400">
-        <Loader2 size={32} className="animate-spin text-blue-600 mx-auto mb-3" />
-        <p className="text-sm">Loading municipal categories and departments...</p>
+      <div style={{ textAlign: "center", padding: "3rem 1rem", color: "var(--text-light)" }}>
+        <Loader2 size={32} className="animate-spin" style={{ color: "var(--blue-primary)", margin: "0 auto 12px auto" }} />
+        <p style={{ fontSize: "0.875rem" }}>Loading municipal categories and departments...</p>
       </div>
     );
   }
@@ -180,27 +180,28 @@ export default function FileComplaint({ onSuccess }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white border border-emerald-200 rounded-2xl p-8 text-center shadow-sm max-w-xl mx-auto"
+        className="card"
+        style={{ maxWidth: "36rem", margin: "0 auto", textAlign: "center", padding: "2rem" }}
       >
-        <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 inline-flex items-center justify-center mb-4">
+        <div style={{ width: "3.5rem", height: "3.5rem", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-success-bg)", color: "var(--color-success)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem" }}>
           <FileCheck size={28} />
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text-dark)", marginBottom: "0.5rem" }}>
           Grievance Logged Successfully
         </h2>
-        <p className="text-sm text-slate-600 mb-5">
+        <p style={{ fontSize: "0.875rem", color: "var(--text-secondary)", marginBottom: "1.25rem" }}>
           Your ticket <b>#{successResult.complaint.id.slice(0, 8)}</b> is recorded with status <b>Submitted</b>.
         </p>
 
         {hasDuplicates ? (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left text-xs text-amber-900 mb-6">
-            <div className="font-bold flex items-center gap-1.5 mb-1.5 text-amber-800">
-              <ShieldAlert size={15} className="text-amber-600" /> Duplicate Check Notice (7-day window)
+          <div className="alert alert-warning" style={{ display: "block", textAlign: "left", marginBottom: "1.5rem" }}>
+            <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+              <ShieldAlert size={15} /> Duplicate Check Notice (7-day window)
             </div>
-            <p className="mb-2 leading-relaxed">
+            <p style={{ marginBottom: "8px" }}>
               There is already <b>{successResult.potential_duplicates.length} open grievance(s)</b> in <b>{ward}</b> under <b>{selectedCategory?.name}</b>:
             </p>
-            <ul className="pl-4 list-disc space-y-1 text-amber-800">
+            <ul style={{ paddingLeft: "1.25rem" }}>
               {successResult.potential_duplicates.map((dup) => (
                 <li key={dup.id}>
                   <b>#{dup.id.slice(0, 8)}</b>: "{dup.title}" — Status: <i>{dup.status}</i>
@@ -209,7 +210,7 @@ export default function FileComplaint({ onSuccess }) {
             </ul>
           </div>
         ) : (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-800 flex items-center justify-center gap-2 mb-6">
+          <div className="alert alert-success" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "1.5rem" }}>
             <CheckCircle2 size={15} /> Duplicate check: No identical grievances detected in this ward.
           </div>
         )}
@@ -217,7 +218,7 @@ export default function FileComplaint({ onSuccess }) {
         <motion.button
           whileTap={{ scale: 0.96 }}
           onClick={() => onSuccess && onSuccess(successResult.complaint)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold bg-pin-red hover:bg-pin-redHover text-white shadow-xs cursor-pointer transition-colors"
+          className="btn btn-pin-red"
         >
           Proceed to My Complaints
           <ArrowRight size={15} />
@@ -227,17 +228,17 @@ export default function FileComplaint({ onSuccess }) {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       {/* Step 1: Category Picker */}
-      <div className="bg-white border border-pin-border rounded-2xl p-6 sm:p-7 shadow-xs">
-        <h2 className="text-xl font-black text-pin-dark mb-1">
+      <div className="card">
+        <h2 style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--pin-dark)", marginBottom: "4px" }}>
           1. Select Grievance Category
         </h2>
-        <p className="text-xs text-pin-gray mb-5">
+        <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
           Pick the municipal category best matching your issue
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
+        <div className="file-category-grid">
           {categories.map((cat) => {
             const isSelected = cat.id === selectedCategoryId;
             return (
@@ -247,22 +248,28 @@ export default function FileComplaint({ onSuccess }) {
                 whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setSelectedCategoryId(cat.id)}
-                className={"p-4 sm:p-5 rounded-2xl border flex flex-col items-center text-center justify-between gap-3 transition-all cursor-pointer group shadow-sm hover:shadow-md " +
-                  (isSelected
-                    ? "bg-white border-blue-600 ring-2 ring-blue-500/20 text-slate-900 shadow-md"
-                    : "bg-white border-slate-200 hover:border-blue-400 text-slate-800")}
+                className={`file-category-btn ${isSelected ? "selected" : ""}`}
               >
                 <div
-                  className={"w-11 h-11 rounded-xl flex items-center justify-center transition-all group-hover:scale-110 " +
-                    (isSelected
-                      ? "bg-blue-600 text-white shadow-xs"
-                      : "bg-blue-50 text-blue-700")}
+                  style={{
+                    width: "2.75rem",
+                    height: "2.75rem",
+                    borderRadius: "var(--radius-md)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: isSelected ? "var(--blue-primary)" : "var(--blue-light)",
+                    color: isSelected ? "#ffffff" : "var(--blue-primary)"
+                  }}
                 >
                   <CategoryIcon name={cat.name} icon={cat.icon} size={22} />
                 </div>
                 <span
-                  className={"text-xs font-bold transition-colors " +
-                    (isSelected ? "text-blue-700 font-extrabold" : "text-slate-800 group-hover:text-blue-600")}
+                  style={{
+                    fontSize: "0.75rem",
+                    fontWeight: isSelected ? 800 : 700,
+                    color: isSelected ? "var(--blue-primary)" : "var(--text-dark)"
+                  }}
                 >
                   {cat.name}
                 </span>
@@ -273,30 +280,30 @@ export default function FileComplaint({ onSuccess }) {
       </div>
 
       {/* Step 2: Grievance Form */}
-      <div className="bg-white border border-pin-border rounded-2xl p-6 sm:p-7 shadow-xs">
-        <h2 className="text-xl font-black text-pin-dark mb-1">
+      <div className="card">
+        <h2 style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--pin-dark)", marginBottom: "4px" }}>
           2. Describe the Problem
         </h2>
-        <p className="text-xs text-pin-gray mb-5">
-          Selected Category: <b className="text-pin-dark">{selectedCategory?.name}</b>
+        <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
+          Selected Category: <b style={{ color: "var(--pin-dark)" }}>{selectedCategory?.name}</b>
         </p>
 
         {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-3 text-xs flex gap-2 items-center mb-5">
-            <AlertCircle size={15} className="shrink-0" />
+          <div className="alert alert-danger">
+            <AlertCircle size={15} style={{ flexShrink: 0 }} />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit}>
           {subcategories.length > 0 && (
-            <div>
-              <label className="block text-xs font-semibold text-pin-dark mb-1.5" htmlFor="subcategory">
+            <div className="form-group">
+              <label className="form-label" htmlFor="subcategory">
                 Specific Sub-type
               </label>
               <select
                 id="subcategory"
-                className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red"
+                className="form-select"
                 value={subcategoryId}
                 onChange={(e) => setSubcategoryId(e.target.value)}
               >
@@ -307,14 +314,14 @@ export default function FileComplaint({ onSuccess }) {
             </div>
           )}
 
-          <div>
-            <label className="block text-xs font-semibold text-pin-dark mb-1.5" htmlFor="title">
+          <div className="form-group">
+            <label className="form-label" htmlFor="title">
               Title / Summary
             </label>
             <input
               id="title"
               type="text"
-              className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red"
+              className="form-input"
               required
               placeholder="e.g. Deep pothole causing accidents near Market Gate"
               value={title}
@@ -322,13 +329,13 @@ export default function FileComplaint({ onSuccess }) {
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-pin-dark mb-1.5" htmlFor="description">
+          <div className="form-group">
+            <label className="form-label" htmlFor="description">
               Detailed Description
             </label>
             <textarea
               id="description"
-              className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red min-h-[90px]"
+              className="form-textarea"
               required
               placeholder="Provide exact details (duration of issue, safety risks, landmark references)..."
               value={description}
@@ -336,17 +343,17 @@ export default function FileComplaint({ onSuccess }) {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="sm:col-span-2">
-              <div className="flex justify-between items-center mb-1.5">
-                <label className="text-xs font-semibold text-pin-dark" htmlFor="locationText">
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <label className="form-label" htmlFor="locationText" style={{ margin: 0 }}>
                   Location / Landmark
                 </label>
                 <button
                   type="button"
                   onClick={handleDetectLocation}
                   disabled={detectingGps}
-                  className="text-xs font-semibold text-pin-red hover:text-pin-redHover inline-flex items-center gap-1 cursor-pointer"
+                  style={{ background: "none", border: "none", color: "var(--pin-red)", fontSize: "0.75rem", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: "4px", cursor: "pointer" }}
                 >
                   <Compass size={13} />
                   {detectingGps ? "Locating..." : "Use My GPS"}
@@ -355,26 +362,26 @@ export default function FileComplaint({ onSuccess }) {
               <input
                 id="locationText"
                 type="text"
-                className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red"
+                className="form-input"
                 required
                 placeholder="e.g. Main Road, opposite Green Park Gate 2"
                 value={locationText}
                 onChange={(e) => setLocationText(e.target.value)}
               />
               {lat && lng && (
-                <div className="text-[11px] text-emerald-600 mt-1 font-medium">
+                <div style={{ fontSize: "11px", color: "var(--color-success-text)", marginTop: "4px", fontWeight: 600 }}>
                   ✓ GPS Tagged: {lat.toFixed(5)}, {lng.toFixed(5)}
                 </div>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-pin-dark mb-1.5" htmlFor="ward">
+              <label className="form-label" htmlFor="ward">
                 Ward
               </label>
               <select
                 id="ward"
-                className="w-full px-3.5 py-2.5 text-xs text-pin-dark bg-white border border-pin-border rounded-lg outline-none focus:border-pin-red"
+                className="form-select"
                 value={ward}
                 onChange={(e) => setWard(e.target.value)}
               >
@@ -391,34 +398,34 @@ export default function FileComplaint({ onSuccess }) {
           />
 
           {/* Duplicate Alert Notice */}
-          <div className="p-3.5 rounded-xl border border-amber-200 bg-amber-50 text-xs text-amber-900 mt-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2 font-bold">
+          <div className={`alert ${liveDuplicates.length > 0 ? "alert-warning" : "alert-success"}`} style={{ display: "block" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700 }}>
                 {liveDuplicates.length > 0 ? (
                   <>
-                    <ShieldAlert size={15} className="text-amber-600" />
+                    <ShieldAlert size={15} />
                     <span>Potential Duplicate Alert ({liveDuplicates.length} open issue in {ward})</span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 size={15} className="text-emerald-600" />
-                    <span className="text-emerald-800">Duplicate Check: No similar open complaints in {ward}</span>
+                    <CheckCircle2 size={15} />
+                    <span>Duplicate Check: No similar open complaints in {ward}</span>
                   </>
                 )}
               </div>
               {checkingDuplicates && (
-                <span className="text-[11px] text-slate-400">Checking...</span>
+                <span style={{ fontSize: "11px", color: "var(--text-light)" }}>Checking...</span>
               )}
             </div>
 
             {liveDuplicates.length > 0 && (
-              <div className="mt-2 text-[11px] text-amber-800 space-y-1">
+              <div style={{ marginTop: "8px", fontSize: "11px" }}>
                 <p>The municipal board already has open complaints recorded under <b>{selectedCategory?.name}</b> in <b>{ward}</b>:</p>
-                <div className="bg-white/80 p-2 rounded-lg border border-amber-200 space-y-0.5">
+                <div style={{ backgroundColor: "rgba(255, 255, 255, 0.8)", padding: "8px", borderRadius: "6px", marginTop: "4px" }}>
                   {liveDuplicates.map((dup) => (
-                    <div key={dup.id} className="flex justify-between">
+                    <div key={dup.id} style={{ display: "flex", justifyContent: "space-between", margin: "2px 0" }}>
                       <span>• <b>#{dup.id.slice(0, 8)}</b>: "{dup.title}"</span>
-                      <span className="font-semibold text-amber-700 capitalize">({dup.status})</span>
+                      <span style={{ fontWeight: 600, textTransform: "capitalize" }}>({dup.status})</span>
                     </div>
                   ))}
                 </div>
@@ -429,7 +436,8 @@ export default function FileComplaint({ onSuccess }) {
           <motion.button
             whileTap={{ scale: 0.96 }}
             type="submit"
-            className="w-full mt-4 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-400 text-white shadow-xs cursor-pointer disabled:opacity-60 transition-colors"
+            className="btn btn-primary btn-lg"
+            style={{ width: "100%", marginTop: "1rem" }}
             disabled={submitting}
           >
             {submitting ? (

@@ -17,11 +17,18 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      const { data, error } = await supabase
+      const fetchPromise = supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
+
+      // Enforce 3.5s timeout on profile lookup so unreachable network never hangs the app
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile fetch timed out')), 3500)
+      );
+
+      const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
 
       if (error) {
         console.error('Error fetching profile:', error);
@@ -39,18 +46,51 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    // 1. Initial session check
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      if (currentUser) {
-        await fetchProfile(currentUser.id);
+    let isMounted = true;
+
+    // Safety timeout: Ensure loading is never permanently stuck at true
+    // (e.g. if Supabase project is paused, unreachable, or DNS resolution fails)
+    const safetyTimeout = setTimeout(() => {
+      if (isMounted) {
+        setLoading((prev) => {
+          if (prev) {
+            console.warn('⚠️ Auth initialization timed out - proceeding in guest mode');
+            return false;
+          }
+          return false;
+        });
       }
-      setLoading(false);
-    });
+    }, 2000);
+
+    // 1. Initial session check
+    supabase.auth
+      .getSession()
+      .then(async (response) => {
+        if (!isMounted) return;
+        const session = response?.data?.session ?? null;
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        if (currentUser) {
+          await fetchProfile(currentUser.id);
+        }
+      })
+      .catch((err) => {
+        console.error('Session retrieval error:', err);
+        if (isMounted) {
+          setUser(null);
+          setProfile(null);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false);
+          clearTimeout(safetyTimeout);
+        }
+      });
 
     // 2. Real-time auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!isMounted) return;
       const currentUser = session?.user ?? null;
       setUser(currentUser);
       if (currentUser) {
@@ -59,10 +99,13 @@ export function AuthProvider({ children }) {
         setProfile(null);
       }
       setLoading(false);
+      clearTimeout(safetyTimeout);
     });
 
     return () => {
-      subscription.unsubscribe();
+      isMounted = false;
+      clearTimeout(safetyTimeout);
+      data?.subscription?.unsubscribe?.();
     };
   }, []);
 

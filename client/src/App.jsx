@@ -13,6 +13,20 @@ import OfficerHome from "./pages/officer/OfficerHome";
 import AdminHome from "./pages/admin/AdminHome";
 
 /**
+ * Clean loading indicator while verifying session
+ */
+function RouteLoading() {
+  return (
+    <div className="route-loading">
+      <div className="route-loading-spinner" />
+      <p className="route-loading-text">
+        Loading CivicConnect...
+      </p>
+    </div>
+  );
+}
+
+/**
  * Root Router: When a user visits / or is logged in,
  * automatically redirect them directly to their dedicated portal.
  * Public visitors see the landing page.
@@ -20,7 +34,7 @@ import AdminHome from "./pages/admin/AdminHome";
 function RootRoute() {
   const { user, role, loading } = useAuth();
 
-  if (loading) return null;
+  if (loading) return <RouteLoading />;
 
   if (user) {
     if (role === "admin") return <Navigate to="/admin" replace />;
@@ -37,7 +51,7 @@ function RootRoute() {
 function PublicOnlyRoute({ children }) {
   const { user, role, loading } = useAuth();
 
-  if (loading) return null;
+  if (loading) return <RouteLoading />;
 
   if (user) {
     if (role === "admin") return <Navigate to="/admin" replace />;
@@ -52,9 +66,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className="flex flex-col min-h-screen">
+        <div className="app-container">
           <Navbar />
-          <main className="flex-1 pb-10">
+          <main className="app-main">
             <Routes>
               {/* Dynamic Root: auto-guides logged-in users directly to their portal */}
               <Route path="/" element={<RootRoute />} />

@@ -195,28 +195,28 @@ export default function AdminHome() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="admin-page-container">
       {/* Top Banner */}
       <motion.div
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white border border-pink-200 rounded-2xl p-6 md:p-8 mb-8 shadow-sm"
+        className="admin-header-card"
       >
-        <div className="flex justify-between items-start flex-wrap gap-4">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-pink-50 text-pink-700 border border-pink-200">
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+              <span className="role-badge admin">
                 <ShieldAlert size={13} />
                 Administrator Console
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="role-badge" style={{ backgroundColor: "var(--color-success-bg)", color: "var(--color-success-text)", border: "1px solid var(--color-success-border)" }}>
                 City Municipal Control
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-dark)", letterSpacing: "-0.02em" }}>
               CivicConnect Governance &amp; Analytics
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginTop: "4px" }}>
               Live city-wide KPI dashboards, officer scorecard, escalation reassignments, and category taxonomy.
             </p>
           </div>
@@ -224,17 +224,17 @@ export default function AdminHome() {
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={fetchAllData}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm cursor-pointer"
+            className="btn btn-secondary"
           >
             ↻ Refresh Analytics
           </motion.button>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex gap-2.5 mt-6 pt-5 border-t border-slate-100 overflow-x-auto pb-1">
+        <div className="admin-tabs-bar">
           {[
             { key: "analytics", label: "Analytics & KPIs", icon: BarChart3 },
-            { key: "escalations", label: "Escalations (" + escalations.length + ")", icon: RotateCcw, highlight: escalations.length > 0 },
+            { key: "escalations", label: "Escalations (" + escalations.length + ")", icon: RotateCcw },
             { key: "officers", label: "Officers (" + officers.length + ")", icon: Users },
             { key: "categories", label: "Categories (" + categories.length + ")", icon: FolderTree }
           ].map((tab) => {
@@ -245,10 +245,7 @@ export default function AdminHome() {
                 key={tab.key}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab(tab.key)}
-                className={"inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer " +
-                  (isActive
-                    ? "bg-pink-600 text-white shadow-sm"
-                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50")}
+                className={`admin-tab-btn ${isActive ? "active" : ""}`}
               >
                 <Icon size={14} />
                 {tab.label}
@@ -259,12 +256,12 @@ export default function AdminHome() {
       </motion.div>
 
       {loading ? (
-        <div className="text-center py-14 text-slate-400">
-          <Loader2 size={36} className="animate-spin text-pink-600 mx-auto mb-3" />
-          <p className="text-sm">Compiling SQL analytics and municipal logs...</p>
+        <div style={{ textAlign: "center", padding: "3.5rem 1rem", color: "var(--text-light)" }}>
+          <Loader2 size={36} className="animate-spin" style={{ color: "#db2777", margin: "0 auto 12px auto" }} />
+          <p style={{ fontSize: "0.875rem" }}>Compiling SQL analytics and municipal logs...</p>
         </div>
       ) : error ? (
-        <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-xl text-sm mb-6">
+        <div className="alert alert-danger">
           {error}
         </div>
       ) : (
@@ -273,50 +270,50 @@ export default function AdminHome() {
           {activeTab === "analytics" && (
             <div>
               {/* 5 KPI Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Complaints</div>
-                  <div className="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">{analytics.kpis?.total_complaints || 0}</div>
-                  <div className="text-xs text-blue-600 font-semibold mt-1">Lifetime recorded</div>
+              <div className="admin-kpis-grid">
+                <div className="card" style={{ padding: "1.25rem" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Total Complaints</div>
+                  <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-dark)", marginTop: "4px" }}>{analytics.kpis?.total_complaints || 0}</div>
+                  <div style={{ fontSize: "11px", color: "var(--blue-primary)", fontWeight: 600, marginTop: "4px" }}>Lifetime recorded</div>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Open Complaints</div>
-                  <div className="text-2xl md:text-3xl font-extrabold text-amber-600 mt-1">{analytics.kpis?.open_complaints || 0}</div>
-                  <div className="text-xs text-amber-700 font-semibold mt-1">Active under redressal</div>
+                <div className="card" style={{ padding: "1.25rem" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Open Complaints</div>
+                  <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-warning)", marginTop: "4px" }}>{analytics.kpis?.open_complaints || 0}</div>
+                  <div style={{ fontSize: "11px", color: "var(--color-warning-text)", fontWeight: 600, marginTop: "4px" }}>Active under redressal</div>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Avg Resolution</div>
-                  <div className="text-2xl md:text-3xl font-extrabold text-emerald-600 mt-1">
+                <div className="card" style={{ padding: "1.25rem" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Avg Resolution</div>
+                  <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-success)", marginTop: "4px" }}>
                     {analytics.kpis?.avg_resolution_hours ? analytics.kpis.avg_resolution_hours + "h" : "1.8d"}
                   </div>
-                  <div className="text-xs text-emerald-700 font-semibold mt-1">From filing to proof</div>
+                  <div style={{ fontSize: "11px", color: "var(--color-success-text)", fontWeight: 600, marginTop: "4px" }}>From filing to proof</div>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Within SLA %</div>
-                  <div className="text-2xl md:text-3xl font-extrabold text-blue-600 mt-1">
+                <div className="card" style={{ padding: "1.25rem" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Within SLA %</div>
+                  <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--blue-primary)", marginTop: "4px" }}>
                     {analytics.kpis?.pct_within_sla || 100}%
                   </div>
-                  <div className="text-xs text-blue-700 font-semibold mt-1">Within SLA target</div>
+                  <div style={{ fontSize: "11px", color: "var(--blue-primary)", fontWeight: 600, marginTop: "4px" }}>Within SLA target</div>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm col-span-2 md:col-span-1">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Citizen Rating</div>
-                  <div className="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1 flex items-center gap-1.5">
-                    {analytics.kpis?.avg_rating || 5.0} <Star size={22} className="text-amber-500 fill-amber-500" />
+                <div className="card" style={{ padding: "1.25rem" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Citizen Rating</div>
+                  <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-dark)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    {analytics.kpis?.avg_rating || 5.0} <Star size={22} style={{ color: "var(--color-warning)", fill: "var(--color-warning)" }} />
                   </div>
-                  <div className="text-xs text-slate-500 font-semibold mt-1">Satisfaction score</div>
+                  <div style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Satisfaction score</div>
                 </div>
               </div>
 
               {/* Charts Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                  <h3 className="text-base font-bold text-slate-900 mb-0.5">Complaints by Category</h3>
-                  <p className="text-xs text-slate-400 mb-4">Distribution across 10 municipal types</p>
-                  <div className="h-64 w-full">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1.5rem", marginBottom: "2rem" }}>
+                <div className="card" style={{ padding: "1.5rem" }}>
+                  <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-dark)", marginBottom: "2px" }}>Complaints by Category</h3>
+                  <p style={{ fontSize: "0.75rem", color: "var(--text-light)", marginBottom: "1rem" }}>Distribution across 10 municipal types</p>
+                  <div style={{ height: "16rem", width: "100%" }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={categoryChartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
                         <XAxis dataKey="name" interval={0} angle={-30} textAnchor="end" height={50} tick={{ fontSize: 11, fill: "#94a3b8" }} />
@@ -328,10 +325,10 @@ export default function AdminHome() {
                   </div>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                  <h3 className="text-base font-bold text-slate-900 mb-0.5">Intake Volume Trajectory</h3>
-                  <p className="text-xs text-slate-400 mb-4">Weekly volume trajectory across city</p>
-                  <div className="h-64 w-full">
+                <div className="card" style={{ padding: "1.5rem" }}>
+                  <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-dark)", marginBottom: "2px" }}>Intake Volume Trajectory</h3>
+                  <p style={{ fontSize: "0.75rem", color: "var(--text-light)", marginBottom: "1rem" }}>Weekly volume trajectory across city</p>
+                  <div style={{ height: "16rem", width: "100%" }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={displayWeeklyData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
                         <defs>
@@ -352,42 +349,44 @@ export default function AdminHome() {
               </div>
 
               {/* Officer Scorecard Table */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-bold text-slate-900 mb-0.5">Officer Performance Scorecard</h3>
-                <p className="text-xs text-slate-400 mb-4">Evaluated directly from Postgres view</p>
+              <div className="card" style={{ padding: "1.5rem" }}>
+                <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-dark)", marginBottom: "2px" }}>Officer Performance Scorecard</h3>
+                <p style={{ fontSize: "0.75rem", color: "var(--text-light)", marginBottom: "1rem" }}>Evaluated directly from Postgres view</p>
 
-                <div className="overflow-x-auto rounded-xl border border-slate-100">
-                  <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
+                <div style={{ overflowX: "auto", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)" }}>
+                  <table className="scorecard-table">
+                    <thead>
                       <tr>
-                        <th className="py-3 px-4">Officer</th>
-                        <th className="py-3 px-4">Department</th>
-                        <th className="py-3 px-4">Ward</th>
-                        <th className="py-3 px-4">Resolved</th>
-                        <th className="py-3 px-4">Avg Speed</th>
-                        <th className="py-3 px-4">Rating</th>
-                        <th className="py-3 px-4">Overdue</th>
+                        <th>Officer</th>
+                        <th>Department</th>
+                        <th>Ward</th>
+                        <th>Resolved</th>
+                        <th>Avg Speed</th>
+                        <th>Rating</th>
+                        <th>Overdue</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody>
                       {analytics.officerPerformance?.map((o) => (
-                        <tr key={o.officer_id} className="hover:bg-slate-50/50">
-                          <td className="py-3 px-4 font-bold text-slate-900">{o.full_name}</td>
-                          <td className="py-3 px-4 text-slate-600">{o.department_name}</td>
-                          <td className="py-3 px-4 text-slate-600">{o.ward || "All"}</td>
-                          <td className="py-3 px-4 font-bold">{o.resolved_count || 0}</td>
-                          <td className="py-3 px-4 text-slate-600">{o.avg_resolution_hours ? o.avg_resolution_hours + "h" : "N/A"}</td>
-                          <td className="py-3 px-4 text-amber-600 font-bold flex items-center gap-1">
-                            {o.avg_rating || "5.0"} <Star size={13} className="fill-amber-500" />
+                        <tr key={o.officer_id}>
+                          <td style={{ fontWeight: 700, color: "var(--text-dark)" }}>{o.full_name}</td>
+                          <td style={{ color: "var(--text-secondary)" }}>{o.department_name}</td>
+                          <td style={{ color: "var(--text-secondary)" }}>{o.ward || "All"}</td>
+                          <td style={{ fontWeight: 700 }}>{o.resolved_count || 0}</td>
+                          <td style={{ color: "var(--text-secondary)" }}>{o.avg_resolution_hours ? o.avg_resolution_hours + "h" : "N/A"}</td>
+                          <td style={{ color: "var(--color-warning)", fontWeight: 700 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                              {o.avg_rating || "5.0"} <Star size={13} style={{ fill: "var(--color-warning)" }} />
+                            </div>
                           </td>
-                          <td className="py-3 px-4">
+                          <td>
                             {o.overdue_count > 0 ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700">
-                                <span className="w-1.5 h-1.5 rounded-full bg-rose-600 urgent-pulse-dot" />
+                              <span className="badge badge-urgent">
+                                <span className="urgent-pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--color-danger)" }} />
                                 {o.overdue_count} overdue
                               </span>
                             ) : (
-                              <span className="text-emerald-600 font-semibold">0</span>
+                              <span style={{ color: "var(--color-success-text)", fontWeight: 600 }}>0</span>
                             )}
                           </td>
                         </tr>
@@ -401,57 +400,60 @@ export default function AdminHome() {
 
           {/* TAB 2: ESCALATIONS */}
           {activeTab === "escalations" && (
-            <div className="space-y-4">
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               {escalations.length === 0 ? (
-                <div className="bg-white border border-slate-200 rounded-2xl text-center py-14 px-6 shadow-sm">
-                  <CheckCircle2 size={44} className="text-emerald-600 mx-auto mb-3" />
-                  <h3 className="text-lg font-bold text-slate-900">Zero Escalated Complaints</h3>
-                  <p className="text-sm text-slate-400 mt-1">All complaints are within SLA deadlines.</p>
+                <div className="card" style={{ textAlign: "center", padding: "3.5rem 1.5rem" }}>
+                  <CheckCircle2 size={44} style={{ color: "var(--color-success)", margin: "0 auto 12px auto" }} />
+                  <h3 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--text-dark)" }}>Zero Escalated Complaints</h3>
+                  <p style={{ fontSize: "0.875rem", color: "var(--text-light)", marginTop: "4px" }}>All complaints are within SLA deadlines.</p>
                 </div>
               ) : (
-                <div className="flex flex-col gap-4">
+                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                   {escalations.map((ticket) => {
                     const isReopened = ticket.status === "reopened";
                     return (
                       <motion.div
                         key={ticket.id}
                         whileHover={{ y: -2 }}
-                        className={"bg-white border rounded-2xl p-6 shadow-sm relative " +
-                          (isReopened ? "border-l-4 border-l-pink-600" : "border-l-4 border-l-rose-600")}
+                        className="card"
+                        style={{
+                          borderLeft: isReopened ? "4px solid #db2777" : "4px solid var(--color-danger)",
+                          padding: "1.5rem"
+                        }}
                       >
-                        <div className="flex justify-between items-start flex-wrap gap-2 mb-2">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "8px", marginBottom: "8px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <div style={{ width: "2rem", height: "2rem", borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-surface-alt)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
                               <CategoryIcon name={ticket.category?.name} icon={ticket.category?.icon} size={18} />
                             </div>
                             <div>
-                              <span className="font-mono text-xs font-bold text-slate-400">#{ticket.id.slice(0, 8)}</span>
-                              <span className="text-sm font-bold text-slate-900 ml-2">{ticket.title}</span>
+                              <span style={{ fontFamily: "monospace", fontSize: "0.75rem", fontWeight: 700, color: "var(--text-light)" }}>#{ticket.id.slice(0, 8)}</span>
+                              <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "var(--text-dark)", marginLeft: "8px" }}>{ticket.title}</span>
                             </div>
                           </div>
-                          <div className="flex gap-2">
+                          <div style={{ display: "flex", gap: "8px" }}>
                             {isReopened ? (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-pink-50 text-pink-700 border border-pink-200">
+                              <span className="badge" style={{ backgroundColor: "#fdf2f8", color: "#db2777", border: "1px solid #fbcfe8" }}>
                                 <RotateCcw size={12} /> Reopened by Citizen
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                                <span className="w-2 h-2 rounded-full bg-rose-600 urgent-pulse-dot" />
+                              <span className="badge badge-urgent">
+                                <span className="urgent-pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--color-danger)" }} />
                                 Overdue SLA
                               </span>
                             )}
                           </div>
                         </div>
 
-                        <p className="text-sm text-slate-600 mb-3">{ticket.description}</p>
+                        <p style={{ fontSize: "0.875rem", color: "var(--text-secondary)", marginBottom: "0.75rem" }}>{ticket.description}</p>
 
-                        <div className="flex gap-4 text-xs text-slate-400 mb-4 flex-wrap">
+                        <div style={{ display: "flex", gap: "1rem", fontSize: "0.75rem", color: "var(--text-light)", marginBottom: "1rem", flexWrap: "wrap" }}>
                           <span><b>Ward:</b> {ticket.ward || "General"}</span>
                           <span><b>Citizen:</b> {ticket.citizen?.full_name}</span>
                           <span><b>Current Officer:</b> {ticket.assigned_officer?.full_name || "Unassigned"}</span>
                         </div>
 
-                        <div className="flex justify-end pt-3 border-t border-slate-100">
+                        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: "0.75rem", borderTop: "1px solid var(--border-subtle)" }}>
                           <motion.button
                             whileTap={{ scale: 0.98 }}
                             onClick={() => {
@@ -459,7 +461,7 @@ export default function AdminHome() {
                               setTargetOfficerId(officers[0]?.id || "");
                               setReassignNote("");
                             }}
-                            className="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm cursor-pointer"
+                            className="btn btn-primary"
                           >
                             Reassign to Different Officer
                           </motion.button>
@@ -474,37 +476,37 @@ export default function AdminHome() {
 
           {/* TAB 3: OFFICERS DIRECTORY */}
           {activeTab === "officers" && (
-            <div className="space-y-5">
-              <div className="flex justify-between items-center flex-wrap gap-3">
-                <h2 className="text-lg font-bold text-slate-900">Municipal Officers Directory</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
+                <h2 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--text-dark)" }}>Municipal Officers Directory</h2>
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setCreateOfficerModal(true)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                  className="btn btn-primary"
                 >
                   <UserPlus size={15} /> Add New Officer
                 </motion.button>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
+              <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+                <table className="scorecard-table">
+                  <thead>
                     <tr>
-                      <th className="py-3 px-4">Officer Name</th>
-                      <th className="py-3 px-4">Department</th>
-                      <th className="py-3 px-4">Ward</th>
-                      <th className="py-3 px-4">Phone</th>
-                      <th className="py-3 px-4">Workload</th>
+                      <th>Officer Name</th>
+                      <th>Department</th>
+                      <th>Ward</th>
+                      <th>Phone</th>
+                      <th>Workload</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody>
                     {officers.map((off) => (
-                      <tr key={off.id} className="hover:bg-slate-50/50">
-                        <td className="py-3 px-4 font-bold text-slate-900">{off.full_name}</td>
-                        <td className="py-3 px-4 text-slate-600">{off.department_name}</td>
-                        <td className="py-3 px-4"><span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">{off.ward || "All"}</span></td>
-                        <td className="py-3 px-4 text-slate-600">{off.phone || "N/A"}</td>
-                        <td className="py-3 px-4 font-bold">{off.activeCount} active</td>
+                      <tr key={off.id}>
+                        <td style={{ fontWeight: 700, color: "var(--text-dark)" }}>{off.full_name}</td>
+                        <td style={{ color: "var(--text-secondary)" }}>{off.department_name}</td>
+                        <td><span className="badge badge-default">{off.ward || "All"}</span></td>
+                        <td style={{ color: "var(--text-secondary)" }}>{off.phone || "N/A"}</td>
+                        <td style={{ fontWeight: 700 }}>{off.activeCount} active</td>
                       </tr>
                     ))}
                   </tbody>
@@ -515,42 +517,43 @@ export default function AdminHome() {
 
           {/* TAB 4: CATEGORIES */}
           {activeTab === "categories" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem" }}>
               {categories.map((cat) => (
-                <div key={cat.id} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-3xl">{cat.icon}</span>
+                <div key={cat.id} className="card" style={{ padding: "1.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "0.75rem" }}>
+                    <span style={{ fontSize: "1.75rem" }}>{cat.icon}</span>
                     <div>
-                      <h4 className="text-base font-bold text-slate-900">{cat.name}</h4>
-                      <div className="text-xs font-semibold text-blue-600">{cat.departments?.name}</div>
+                      <h4 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-dark)" }}>{cat.name}</h4>
+                      <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--blue-primary)" }}>{cat.departments?.name}</div>
                     </div>
                   </div>
 
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Subcategories:</div>
-                  <ul className="pl-4 list-disc text-xs text-slate-600 space-y-1 mb-4">
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "6px" }}>Subcategories:</div>
+                  <ul style={{ paddingLeft: "1rem", fontSize: "0.75rem", color: "var(--text-secondary)", marginBottom: "1rem" }}>
                     {cat.subcategories?.map((sub) => (
-                      <li key={sub.id}>{sub.name}</li>
+                      <li key={sub.id} style={{ marginBottom: "3px" }}>{sub.name}</li>
                     ))}
                   </ul>
 
                   {addingSubcatFor === cat.id ? (
-                    <div className="flex gap-2">
+                    <div style={{ display: "flex", gap: "6px" }}>
                       <input
                         type="text"
-                        className="w-full text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg outline-none focus:border-blue-600"
+                        className="form-input"
+                        style={{ padding: "4px 8px", fontSize: "11px" }}
                         placeholder="Subcategory name..."
                         value={newSubcatName}
                         onChange={(e) => setNewSubcatName(e.target.value)}
                       />
                       <button
                         onClick={() => handleAddSubcategory(cat.id)}
-                        className="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg cursor-pointer"
+                        className="btn btn-primary btn-sm"
                       >
                         Add
                       </button>
                       <button
                         onClick={() => { setAddingSubcatFor(null); setNewSubcatName(""); }}
-                        className="px-2 py-1.5 bg-slate-100 text-slate-600 text-xs rounded-lg cursor-pointer"
+                        className="btn btn-secondary btn-sm"
                       >
                         ✕
                       </button>
@@ -558,7 +561,7 @@ export default function AdminHome() {
                   ) : (
                     <button
                       onClick={() => { setAddingSubcatFor(cat.id); setNewSubcatName(""); }}
-                      className="text-xs text-blue-600 font-semibold inline-flex items-center gap-1 hover:underline cursor-pointer"
+                      style={{ background: "none", border: "none", fontSize: "0.75rem", color: "var(--blue-primary)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px", cursor: "pointer" }}
                     >
                       <PlusCircle size={13} /> Add Subcategory
                     </button>
@@ -572,18 +575,18 @@ export default function AdminHome() {
 
       {/* Reassign Modal */}
       {reassignModalTicket && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
-            <h3 className="text-base font-bold text-slate-900 mb-1">
+        <div className="modal-overlay">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="modal-card">
+            <h3 className="modal-title">
               Reassign Ticket #{reassignModalTicket.id.slice(0, 8)}
             </h3>
-            <p className="text-xs text-slate-400 mb-4">{reassignModalTicket.title}</p>
+            <p style={{ fontSize: "0.75rem", color: "var(--text-light)", marginBottom: "1rem" }}>{reassignModalTicket.title}</p>
 
-            <form onSubmit={handleReassignSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Select Officer</label>
+            <form onSubmit={handleReassignSubmit}>
+              <div className="form-group">
+                <label className="form-label">Select Officer</label>
                 <select
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl outline-none"
+                  className="form-select"
                   value={targetOfficerId}
                   onChange={(e) => setTargetOfficerId(e.target.value)}
                   required
@@ -596,29 +599,29 @@ export default function AdminHome() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Note</label>
+              <div className="form-group">
+                <label className="form-label">Note</label>
                 <textarea
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl outline-none"
-                  rows={2}
+                  className="form-textarea"
+                  style={{ minHeight: "60px" }}
                   value={reassignNote}
                   onChange={(e) => setReassignNote(e.target.value)}
                   placeholder="Reason for reassignment..."
                 />
               </div>
 
-              <div className="flex justify-end gap-2">
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
                 <button
                   type="button"
                   onClick={() => setReassignModalTicket(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 cursor-pointer"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={reassigning}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer"
+                  className="btn btn-primary"
                 >
                   {reassigning ? "Reassigning..." : "Confirm"}
                 </button>
@@ -630,27 +633,27 @@ export default function AdminHome() {
 
       {/* Onboard Officer Modal */}
       {createOfficerModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
-            <h3 className="text-base font-bold text-slate-900 mb-4">Onboard Municipal Officer</h3>
-            <form onSubmit={handleCreateOfficerSubmit} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+        <div className="modal-overlay">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="modal-card">
+            <h3 className="modal-title" style={{ marginBottom: "1rem" }}>Onboard Municipal Officer</h3>
+            <form onSubmit={handleCreateOfficerSubmit}>
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
                 <input
                   type="text"
                   required
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl"
+                  className="form-input"
                   placeholder="Officer A. Deshmukh"
                   value={newOfficer.fullName}
                   onChange={(e) => setNewOfficer({ ...newOfficer, fullName: e.target.value })}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Department</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+                <div className="form-group">
+                  <label className="form-label">Department</label>
                   <select
-                    className="w-full text-xs p-2.5 border border-slate-200 rounded-xl"
+                    className="form-select"
                     value={newOfficer.department_id}
                     onChange={(e) => setNewOfficer({ ...newOfficer, department_id: e.target.value })}
                     required
@@ -660,10 +663,10 @@ export default function AdminHome() {
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Ward</label>
+                <div className="form-group">
+                  <label className="form-label">Ward</label>
                   <select
-                    className="w-full text-xs p-2.5 border border-slate-200 rounded-xl"
+                    className="form-select"
                     value={newOfficer.ward}
                     onChange={(e) => setNewOfficer({ ...newOfficer, ward: e.target.value })}
                   >
@@ -674,34 +677,34 @@ export default function AdminHome() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Email</label>
+              <div className="form-group">
+                <label className="form-label">Email</label>
                 <input
                   type="email"
                   required
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl"
+                  className="form-input"
                   placeholder="officer.dept@civicconnect.org"
                   value={newOfficer.email}
                   onChange={(e) => setNewOfficer({ ...newOfficer, email: e.target.value })}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+                <div className="form-group">
+                  <label className="form-label">Password</label>
                   <input
                     type="password"
                     required
-                    className="w-full text-xs p-2.5 border border-slate-200 rounded-xl"
+                    className="form-input"
                     value={newOfficer.password}
                     onChange={(e) => setNewOfficer({ ...newOfficer, password: e.target.value })}
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Phone</label>
+                <div className="form-group">
+                  <label className="form-label">Phone</label>
                   <input
                     type="tel"
-                    className="w-full text-xs p-2.5 border border-slate-200 rounded-xl"
+                    className="form-input"
                     placeholder="9876543210"
                     value={newOfficer.phone}
                     onChange={(e) => setNewOfficer({ ...newOfficer, phone: e.target.value })}
@@ -709,18 +712,18 @@ export default function AdminHome() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", paddingTop: "0.5rem" }}>
                 <button
                   type="button"
                   onClick={() => setCreateOfficerModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 cursor-pointer"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creatingOfficer}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer"
+                  className="btn btn-primary"
                 >
                   {creatingOfficer ? "Creating..." : "Create Officer"}
                 </button>

@@ -4,16 +4,46 @@ CivicConnect is an end-to-end municipal complaint logging and redressal system d
 
 ---
 
+## 🛠️ Tech Stack
+
+### Frontend (`client/`)
+- **Framework & Build Tool:** React 18, Vite
+- **Styling:** **Simple Pure CSS** (Modular, responsive CSS with CSS custom properties/variables, custom animations, zero utility CSS framework dependencies)
+- **Routing:** React Router DOM (v6) with client-side RBAC Route Guards
+- **Animations:** Framer Motion
+- **Icons:** Lucide React
+- **Data Visualization & Analytics:** Recharts
+- **Internationalization (i18n):** `i18next`, `react-i18next`, `i18next-browser-languagedetector` (English & Hindi support)
+- **Database / Auth Client:** `@supabase/supabase-js`
+
+### Backend (`server/`)
+- **Runtime & Framework:** Node.js, Express.js
+- **Database Client:** `@supabase/supabase-js` (with Service Role Admin client)
+- **Scheduled Background Tasks:** `node-cron` (e.g., auto-closing resolved complaints after 72h)
+- **HTTP Middleware & Utilities:** CORS, Morgan (HTTP request logger), Dotenv
+
+### Database & Storage (`supabase/`)
+- **Database:** PostgreSQL (hosted on Supabase)
+- **Security:** PostgreSQL Row Level Security (RLS) policies for Citizen, Officer, and Admin tiers
+- **Views:** Analytics views for KPIs, department workload, and SLA compliance
+- **Storage:** Supabase Storage bucket (`complaint-photos`) for before/after incident evidence photos
+
+---
+
 ## Project Structure
 
 ```text
 SE project/
-├── client/                     # React (Vite) + React Router + Recharts
+├── client/                     # React (Vite) + Simple CSS + React Router + Recharts
 │   ├── src/
-│   │   ├── components/         # Minimal, sleek custom UI components
-│   │   ├── context/            # Auth & Notification State
-│   │   ├── pages/              # Citizen, Officer, Admin portals
-│   │   └── services/           # API and Supabase clients
+│   │   ├── components/         # Reusable custom UI components (PhotoUpload, Stepper, Navbar, etc.)
+│   │   ├── context/            # Auth & Session State (AuthContext)
+│   │   ├── locales/            # i18n translation files (en.json, hi.json)
+│   │   ├── pages/              # Citizen, Officer, Admin portals, Auth & Landing
+│   │   ├── services/           # Backend API and Supabase clients
+│   │   ├── index.css           # Pure Standard CSS stylesheet
+│   │   ├── main.jsx            # React root entry
+│   │   └── App.jsx             # Main routing & route guard layout
 │   ├── package.json
 │   └── vite.config.js
 ├── server/                     # Node.js + Express Backend
@@ -21,7 +51,7 @@ SE project/
 │   │   ├── config/             # Supabase Admin & Env configurations
 │   │   ├── middleware/         # JWT verification & RBAC check
 │   │   ├── routes/             # Citizen, Officer, Admin routes
-│   │   ├── services/           # AI Triage (Single LLM call) & node-cron jobs
+│   │   ├── services/           # AI Triage & node-cron jobs
 │   │   └── index.js
 │   ├── .env.example
 │   └── package.json
@@ -46,3 +76,16 @@ SE project/
    - `003_analytics_views.sql`
    - `004_seed_data.sql`
 4. Create a public storage bucket named **`complaint-photos`** in **Storage -> New Bucket** (set to Public so uploaded photos can be displayed on tickets).
+
+---
+
+## Step 2: Running Locally
+
+### Install Dependencies
+```bash
+npm run install:all
+```
+
+### Start Development Servers
+- Backend: `npm run dev:server` (runs Express on `http://localhost:5000`)
+- Frontend: `npm run dev:client` (runs Vite on `http://localhost:5173`)

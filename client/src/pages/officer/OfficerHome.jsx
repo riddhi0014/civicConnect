@@ -140,29 +140,29 @@ export default function OfficerHome() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="officer-page-container">
       {/* Officer Header Card */}
       <motion.div
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 mb-8 shadow-sm"
+        className="officer-header-card"
       >
-        <div className="flex justify-between items-start flex-wrap gap-4">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+              <span className="role-badge officer">
                 <ShieldCheck size={13} />
                 Municipal Officer Desk
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="role-badge" style={{ backgroundColor: "var(--color-success-bg)", color: "var(--color-success-text)", border: "1px solid var(--color-success-border)" }}>
                 <MapPin size={12} />
                 {profile?.ward || "All Wards"}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-dark)", letterSpacing: "-0.02em" }}>
               {profile?.full_name || "Municipal Officer"}
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginTop: "4px" }}>
               Review assigned grievances, maintain SLA targets, and upload photographic proof of work.
             </p>
           </div>
@@ -170,52 +170,44 @@ export default function OfficerHome() {
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={fetchQueue}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm cursor-pointer"
+            className="btn btn-secondary"
           >
             ↻ Refresh Queue
           </motion.button>
         </div>
 
         {/* 3 Top KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-5 border-t border-slate-100">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Assigned to Me</div>
-            <div className="text-3xl font-extrabold text-slate-900 mt-1">{kpis.assignedCount}</div>
-            <div className="text-xs text-blue-600 font-semibold mt-1">Active tickets in queue</div>
+        <div className="officer-kpis-grid">
+          <div className="card" style={{ padding: "1rem", backgroundColor: "var(--bg-surface)" }}>
+            <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Assigned to Me</div>
+            <div style={{ fontSize: "1.875rem", fontWeight: 800, color: "var(--text-dark)", marginTop: "4px" }}>{kpis.assignedCount}</div>
+            <div style={{ fontSize: "11px", color: "var(--blue-primary)", fontWeight: 600, marginTop: "4px" }}>Active tickets in queue</div>
           </div>
 
-          <div className={"border rounded-xl p-4 " +
-            (kpis.overdueCount > 0 ? "bg-rose-50 border-rose-200" : "bg-slate-50 border-slate-200")}
-          >
-            <div className={"text-xs font-bold uppercase tracking-wider " +
-              (kpis.overdueCount > 0 ? "text-rose-700" : "text-slate-400")}
-            >
+          <div className="card" style={{ padding: "1rem", backgroundColor: kpis.overdueCount > 0 ? "var(--color-danger-bg)" : "var(--bg-surface)", borderColor: kpis.overdueCount > 0 ? "var(--color-danger-border)" : "var(--border-color)" }}>
+            <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: kpis.overdueCount > 0 ? "var(--color-danger-text)" : "var(--text-light)" }}>
               Overdue (SLA Breached)
             </div>
-            <div className={"text-3xl font-extrabold mt-1 " +
-              (kpis.overdueCount > 0 ? "text-rose-700" : "text-slate-900")}
-            >
+            <div style={{ fontSize: "1.875rem", fontWeight: 800, color: kpis.overdueCount > 0 ? "var(--color-danger-text)" : "var(--text-dark)", marginTop: "4px" }}>
               {kpis.overdueCount}
             </div>
-            <div className={"text-xs font-semibold mt-1 " +
-              (kpis.overdueCount > 0 ? "text-rose-600" : "text-slate-400")}
-            >
+            <div style={{ fontSize: "11px", fontWeight: 600, color: kpis.overdueCount > 0 ? "var(--color-danger-text)" : "var(--text-muted)", marginTop: "4px" }}>
               {kpis.overdueCount > 0 ? "Urgent escalation needed" : "All tickets within SLA"}
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Citizen Rating</div>
-            <div className="text-3xl font-extrabold text-slate-900 mt-1 flex items-center gap-1.5">
-              {kpis.avgRating} <Star size={22} className="text-amber-500 fill-amber-500" />
+          <div className="card" style={{ padding: "1rem", backgroundColor: "var(--bg-surface)" }}>
+            <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Citizen Rating</div>
+            <div style={{ fontSize: "1.875rem", fontWeight: 800, color: "var(--text-dark)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+              {kpis.avgRating} <Star size={22} style={{ color: "var(--color-warning)", fill: "var(--color-warning)" }} />
             </div>
-            <div className="text-xs text-emerald-600 font-semibold mt-1">{kpis.resolvedCount} tickets resolved</div>
+            <div style={{ fontSize: "11px", color: "var(--color-success-text)", fontWeight: 600, marginTop: "4px" }}>{kpis.resolvedCount} tickets resolved</div>
           </div>
         </div>
       </motion.div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+      <div className="officer-filter-bar">
         {[
           { key: "active", label: "Active Queue (" + complaints.filter((c) => ["assigned", "in_progress", "reopened"].includes(c.status)).length + ")" },
           { key: "overdue", label: "Overdue (" + complaints.filter((c) => c.is_overdue).length + ")" },
@@ -228,10 +220,7 @@ export default function OfficerHome() {
             key={tab.key}
             whileTap={{ scale: 0.98 }}
             onClick={() => setFilter(tab.key)}
-            className={"px-3.5 py-1.5 rounded-lg text-xs font-semibold border whitespace-nowrap transition-all cursor-pointer " +
-              (filter === tab.key
-                ? "bg-amber-600 text-white border-amber-600 shadow-sm"
-                : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50")}
+            className={filter === tab.key ? "btn btn-dark" : "btn btn-secondary"}
           >
             {tab.label}
           </motion.button>
@@ -239,21 +228,22 @@ export default function OfficerHome() {
       </div>
 
       {loading ? (
-        <div className="text-center py-14 text-slate-400">
-          <Loader2 size={36} className="animate-spin text-amber-600 mx-auto mb-3" />
-          <p className="text-sm">Loading officer task queue...</p>
+        <div style={{ textAlign: "center", padding: "3.5rem 1rem", color: "var(--text-light)" }}>
+          <Loader2 size={36} className="animate-spin" style={{ color: "var(--color-warning)", margin: "0 auto 12px auto" }} />
+          <p style={{ fontSize: "0.875rem" }}>Loading officer task queue...</p>
         </div>
       ) : filteredQueue.length === 0 ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-white border border-slate-200 rounded-2xl text-center py-14 px-6"
+          className="card"
+          style={{ textAlign: "center", padding: "3.5rem 1.5rem" }}
         >
-          <CheckCheck size={44} className="text-emerald-600 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-slate-900">
+          <CheckCheck size={44} style={{ color: "var(--color-success)", margin: "0 auto 12px auto" }} />
+          <h3 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--text-dark)" }}>
             No complaints in this queue
           </h3>
-          <p className="text-sm text-slate-400 mt-1">
+          <p style={{ fontSize: "0.875rem", color: "var(--text-light)", marginTop: "4px" }}>
             You have no assigned complaints matching the selected filter.
           </p>
         </motion.div>
@@ -262,7 +252,7 @@ export default function OfficerHome() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="flex flex-col gap-5"
+          style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
         >
           {filteredQueue.map((c) => {
             const isAssigned = c.status === "assigned";
@@ -277,29 +267,24 @@ export default function OfficerHome() {
                 variants={cardVariants}
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.2 }}
-                className={"bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative " +
-                  (c.is_overdue
-                    ? "border-l-4 border-l-rose-600 border-slate-200"
-                    : isInProgress
-                    ? "border-l-4 border-l-blue-600 border-slate-200"
-                    : "border-slate-200")}
+                className={`officer-ticket-card ${c.is_overdue ? "overdue" : isInProgress ? "in-progress" : ""}`}
               >
                 {/* Header */}
-                <div className="flex justify-between items-start flex-wrap gap-3 mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.75rem", marginBottom: "0.75rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <div style={{ width: "2.5rem", height: "2.5rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--bg-surface-alt)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
                       <CategoryIcon name={c.category?.name} icon={c.category?.icon} size={22} />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-slate-400">
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ fontFamily: "monospace", fontSize: "0.75rem", fontWeight: 700, color: "var(--text-light)" }}>
                           #{c.id.slice(0, 8)}
                         </span>
-                        <span className="text-sm font-bold text-slate-900">
+                        <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "var(--text-dark)" }}>
                           {c.category?.name}
                         </span>
                         {c.subcategory && (
-                          <span className="text-xs text-slate-400">
+                          <span style={{ fontSize: "0.75rem", color: "var(--text-light)" }}>
                             · {c.subcategory.name}
                           </span>
                         )}
@@ -307,28 +292,26 @@ export default function OfficerHome() {
                     </div>
                   </div>
 
-                  <div className="flex gap-2 items-center">
+                  <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
                     {c.is_overdue && (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                        <span className="w-2 h-2 rounded-full bg-rose-600 urgent-pulse-dot" />
+                      <span className="badge badge-urgent">
+                        <span className="urgent-pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--color-danger)" }} />
                         <AlertTriangle size={13} /> Overdue SLA
                       </span>
                     )}
 
                     {isHighPriority && !c.is_overdue && (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                        <span className="w-2 h-2 rounded-full bg-rose-600 urgent-pulse-dot" />
+                      <span className="badge badge-urgent">
+                        <span className="urgent-pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--color-danger)" }} />
                         High Priority
                       </span>
                     )}
 
-                    <span className={"inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold tracking-wide capitalize " +
-                      (isResolved
-                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                        : isInProgress
-                        ? "bg-blue-50 text-blue-700 border border-blue-200"
-                        : "bg-amber-50 text-amber-700 border border-amber-200")}
-                    >
+                    <span className="badge" style={{
+                      backgroundColor: isResolved ? "var(--color-success-bg)" : isInProgress ? "var(--blue-light)" : "var(--color-warning-bg)",
+                      color: isResolved ? "var(--color-success-text)" : isInProgress ? "var(--blue-text)" : "var(--color-warning-text)",
+                      border: "1px solid " + (isResolved ? "var(--color-success-border)" : isInProgress ? "var(--blue-border)" : "var(--color-warning-border)")
+                    }}>
                       {c.status.replace("_", " ")}
                     </span>
                   </div>
@@ -336,42 +319,42 @@ export default function OfficerHome() {
 
                 {/* AI Summary Banner */}
                 {c.ai_summary && (
-                  <div className="bg-amber-50/50 border border-amber-200 border-l-4 border-l-amber-600 rounded-lg p-2.5 mb-3.5 text-xs text-slate-700 flex items-center gap-2">
-                    <Sparkles size={14} className="text-amber-600 shrink-0" />
-                    <span className="text-slate-800">
+                  <div style={{ backgroundColor: "var(--color-warning-bg)", border: "1px solid var(--color-warning-border)", borderLeft: "4px solid var(--color-warning)", borderRadius: "var(--radius-sm)", padding: "0.625rem", marginBottom: "0.875rem", fontSize: "0.75rem", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Sparkles size={14} style={{ color: "var(--color-warning)", flexShrink: 0 }} />
+                    <span style={{ color: "var(--text-dark)" }}>
                       <b>AI Summary:</b> "{c.ai_summary}"
                     </span>
                   </div>
                 )}
 
-                <h3 className="text-base font-bold text-slate-900 mb-1.5">
+                <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-dark)", marginBottom: "6px" }}>
                   {c.title}
                 </h3>
-                <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                <p style={{ fontSize: "0.875rem", color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: "1rem" }}>
                   {c.description}
                 </p>
 
                 {/* Citizen Details & Location */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-slate-50 border border-slate-100 rounded-xl p-3.5 text-xs text-slate-600 mb-4">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin size={13} className="text-blue-600 shrink-0" />
-                    <span className="truncate"><b>Loc:</b> {c.location_text}</span>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.75rem", backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-md)", padding: "0.75rem", fontSize: "0.75rem", color: "var(--text-secondary)", marginBottom: "1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <MapPin size={13} style={{ color: "var(--blue-primary)", flexShrink: 0 }} />
+                    <span><b>Loc:</b> {c.location_text}</span>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
-                    <User size={13} className="shrink-0" />
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <User size={13} style={{ flexShrink: 0 }} />
                     <span><b>Citizen:</b> {c.citizen?.full_name || "Anonymous"}</span>
                   </div>
 
                   {c.citizen?.phone && (
-                    <div className="flex items-center gap-1.5">
-                      <Phone size={13} className="shrink-0" />
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <Phone size={13} style={{ flexShrink: 0 }} />
                       <span><b>Tel:</b> {c.citizen.phone}</span>
                     </div>
                   )}
 
-                  <div className="flex items-center gap-1.5">
-                    <Clock size={13} className={c.is_overdue ? "text-rose-600 shrink-0" : "text-slate-400 shrink-0"} />
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <Clock size={13} style={{ color: c.is_overdue ? "var(--color-danger)" : "var(--text-light)", flexShrink: 0 }} />
                     <span>
                       <b>Due:</b> {c.due_at ? new Date(c.due_at).toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "N/A"}
                     </span>
@@ -380,48 +363,48 @@ export default function OfficerHome() {
 
                 {/* Attached Citizen Photo Preview */}
                 {c.photo_url && (
-                  <div className="mb-4 flex items-center gap-3">
+                  <div style={{ marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
                     <img
                       src={c.photo_url}
                       alt="Citizen grievance photo"
-                      className="w-16 h-12 rounded-lg object-cover border border-slate-200 cursor-pointer hover:opacity-90 transition-opacity"
+                      style={{ width: "4rem", height: "3rem", borderRadius: "var(--radius-sm)", objectFit: "cover", border: "1px solid var(--border-color)", cursor: "pointer" }}
                       onClick={() => window.open(c.photo_url, "_blank")}
                       title="Click to view full photo"
                     />
-                    <div className="text-xs text-slate-400">
-                      <span className="font-semibold text-slate-600">Citizen Site Photo</span> (click thumbnail to inspect problem)
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-light)" }}>
+                      <span style={{ fontWeight: 600, color: "var(--text-secondary)" }}>Citizen Site Photo</span> (click thumbnail to inspect problem)
                     </div>
                   </div>
                 )}
 
                 {/* Existing Resolution Proof Display */}
                 {c.resolution && (
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 mb-4 text-xs">
-                    <div className="font-bold text-emerald-800 flex items-center gap-1.5 mb-1">
+                  <div style={{ backgroundColor: "var(--color-success-bg)", border: "1px solid var(--color-success-border)", borderRadius: "var(--radius-md)", padding: "0.75rem", marginBottom: "1rem", fontSize: "0.75rem" }}>
+                    <div style={{ fontWeight: 700, color: "var(--color-success-text)", display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
                       <CheckCircle2 size={14} /> Your Submitted Proof:
                     </div>
-                    <div className="text-emerald-900 mb-2 font-medium">
+                    <div style={{ color: "var(--text-dark)", marginBottom: "8px", fontWeight: 500 }}>
                       "{c.resolution.note}"
                     </div>
                     {c.resolution.after_photo_url && (
                       <img
                         src={c.resolution.after_photo_url}
                         alt="After photo proof"
-                        className="w-24 h-16 object-cover rounded-lg border border-emerald-300 cursor-pointer"
+                        style={{ width: "6rem", height: "4rem", objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--color-success-border)", cursor: "pointer" }}
                         onClick={() => window.open(c.resolution.after_photo_url, "_blank")}
                       />
                     )}
                   </div>
                 )}
 
-                {/* Action Bar with Micro-Interactions */}
-                <div className="flex justify-end gap-2.5 items-center border-t border-slate-100 pt-4">
+                {/* Action Bar */}
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.625rem", alignItems: "center", borderTop: "1px solid var(--border-subtle)", paddingTop: "1rem" }}>
                   {isAssigned && (
                     <motion.button
                       whileTap={{ scale: 0.98 }}
                       disabled={updatingId === c.id}
                       onClick={() => handleStartWork(c.id)}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                      className="btn btn-primary"
                     >
                       {updatingId === c.id ? (
                         <Loader2 size={14} className="animate-spin" />
@@ -441,7 +424,7 @@ export default function OfficerHome() {
                         setAfterPhotoUrl("");
                         setModalError("");
                       }}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                      className="btn btn-success"
                     >
                       <FileCheck2 size={14} />
                       Resolve with Proof
@@ -449,13 +432,13 @@ export default function OfficerHome() {
                   )}
 
                   {c.status === "resolved" && (
-                    <div className="text-xs text-emerald-700 font-bold flex items-center gap-1.5">
+                    <div style={{ fontSize: "0.75rem", color: "var(--color-success-text)", fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }}>
                       <Clock size={13} /> Awaiting Citizen Confirmation (72h Auto-close timer active)
                     </div>
                   )}
 
                   {c.status === "closed" && (
-                    <div className="text-xs text-slate-500 font-semibold">
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>
                       ✓ Case Closed ({c.closed_reason || "Verified"})
                     </div>
                   )}
@@ -468,43 +451,43 @@ export default function OfficerHome() {
 
       {/* Resolve Modal */}
       {resolveModalTicket && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="modal-overlay">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto"
+            className="modal-card"
           >
-            <div className="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+            <div className="modal-header">
               <div>
-                <h2 className="text-base font-bold text-slate-900">
+                <h2 className="modal-title">
                   Resolve #{resolveModalTicket.id.slice(0, 8)}
                 </h2>
-                <div className="text-xs text-slate-400">
+                <div style={{ fontSize: "0.75rem", color: "var(--text-light)" }}>
                   {resolveModalTicket.title}
                 </div>
               </div>
               <button
                 onClick={() => setResolveModalTicket(null)}
-                className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="modal-close-btn"
               >
                 <X size={18} />
               </button>
             </div>
 
             {modalError && (
-              <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-3 text-xs mb-4">
+              <div className="alert alert-danger">
                 {modalError}
               </div>
             )}
 
-            <form onSubmit={handleResolveSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="resNote">
+            <form onSubmit={handleResolveSubmit}>
+              <div className="form-group">
+                <label className="form-label" htmlFor="resNote">
                   Resolution Note (Required)
                 </label>
                 <textarea
                   id="resNote"
-                  className="w-full text-xs p-3 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-600 min-h-[80px]"
+                  className="form-textarea"
                   required
                   placeholder="Describe remediation work performed (e.g. Road patched and leveled on 11 Oct)..."
                   value={resolutionNote}
@@ -517,17 +500,17 @@ export default function OfficerHome() {
                 label="Upload After-Photo Proof (Required by Municipal Policy)"
               />
 
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-blue-800 leading-relaxed">
+              <div className="alert alert-info">
                 ℹ️ <b>Governance Rule:</b> Officers cannot close complaints directly. Once marked as resolved with proof, the ticket is forwarded to the citizen for verification.
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", paddingTop: "0.5rem" }}>
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={() => setResolveModalTicket(null)}
                   disabled={resolving}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </motion.button>
@@ -536,7 +519,7 @@ export default function OfficerHome() {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={resolving || !afterPhotoUrl}
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+                  className="btn btn-success"
                 >
                   {resolving ? (
                     <>

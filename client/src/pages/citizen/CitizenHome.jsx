@@ -45,43 +45,43 @@ export default function CitizenHome() {
     fetchCounts();
   }, [activeView]);
 
-
   return (
-    <div className="min-h-[calc(100vh-65px)] bg-pin-surface/50 flex flex-col">
-      {/* 1. TOP PORTAL HEADER (Stretched full-width to the left) */}
-      <header className="bg-blue-100 border-b border-pin-border  h-36">
-        <div className="w-full pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-6 lg:pr-8 flex items-center justify-between gap-4 pt-8">
-          <div className="flex items-center gap-3">
+    <div className="citizen-portal-container">
+      {/* 1. TOP PORTAL HEADER */}
+      <header className="portal-top-banner">
+        <div className="portal-top-content">
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             {/* Mobile Sidebar Toggle Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 rounded-lg bg-pin-pill text-pin-dark hover:bg-pin-pillHover cursor-pointer"
+              className="btn btn-secondary"
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "0.5rem" }}
               aria-label="Toggle Navigation Sidebar"
             >
               {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
             </motion.button>
 
             <div>
-              <div className="flex items-center gap-2.5">
-                <h1 className="text-xl font-black text-pin-dark tracking-tight leading-tight">
+              <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+                <h1 style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--pin-dark)", letterSpacing: "-0.02em" }}>
                   {t("citizen.dashboardTitle")}
                 </h1>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-pin-pill text-pin-dark">
-                  <ShieldCheck size={13} className="text-pin-red" />
+                <span className="role-badge citizen">
+                  <ShieldCheck size={13} />
                   {t("citizen.verifiedBadge")}
                 </span>
               </div>
-              <p className="text-xs text-pin-gray mt-0.5 hidden sm:block">
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>
                 {t("citizen.subtitle")}
               </p>
             </div>
           </div>
 
           {/* Quick Header Actions */}
-          <div className="flex items-center gap-2.5">
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pin-pill text-xs font-bold text-pin-dark border border-pin-border">
-              <MapPin size={13} className="text-pin-red" />
+          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", padding: "0.375rem 0.75rem", borderRadius: "var(--radius-sm)", background: "var(--pin-pill)", fontSize: "0.75rem", fontWeight: 700, border: "1px solid var(--border-color)", color: "var(--pin-dark)" }}>
+              <MapPin size={13} style={{ color: "var(--pin-red)" }} />
               <span>{profile?.ward || "Ward 1 · City Center"}</span>
             </div>
 
@@ -91,7 +91,7 @@ export default function CitizenHome() {
                 setActiveView("file");
                 setSidebarOpen(false);
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-pin-red hover:bg-pin-redHover text-white shadow-xs cursor-pointer transition-colors"
+              className="btn btn-pin-red"
             >
               <PlusCircle size={14} />
               <span>{t("citizen.fileNew")}</span>
@@ -100,34 +100,29 @@ export default function CitizenHome() {
         </div>
       </header>
 
-      {/* 2. BODY LAYOUT: Full-width container */}
-      <div className="w-full pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-6 lg:pr-8 py-6 flex-1 flex gap-8 relative">
-        {/* SIDEBAR NAVIGATION (Clean, Light, Structured) */}
+      {/* 2. BODY LAYOUT */}
+      <div className="portal-body-layout">
+        {/* SIDEBAR NAVIGATION */}
         <AnimatePresence>
           {(sidebarOpen || (typeof window !== "undefined" && window.innerWidth >= 1024)) && (
-            <aside
-              className={"w-64 shrink-0 flex flex-col gap-5 " +
-                (sidebarOpen
-                  ? "fixed inset-y-0 left-0 z-40 bg-blue-400 p-6 shadow-2xl overflow-y-auto block top-[57px]"
-                  : "hidden lg:flex")}
-            >
+            <aside className={`portal-sidebar ${sidebarOpen ? "mobile-open" : ""}`}>
               {/* Citizen Identity Box */}
-              <div className="bg-pin-pill/70 rounded-xl p-4 border border-pin-border">
-                <div className="text-[10px] font-bold tracking-wider uppercase text-pin-gray">
+              <div className="sidebar-user-box">
+                <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--text-light)" }}>
                   {t("citizen.activeAccount")}
                 </div>
-                <div className="text-sm font-bold text-pin-dark mt-1 truncate">
+                <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "var(--pin-dark)", marginTop: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {profile?.full_name || user?.email?.split("@")[0]}
                 </div>
-                <div className="text-xs text-pin-gray mt-1 flex items-center gap-1 font-medium">
-                  <MapPin size={12} className="text-pin-red" />
+                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "4px", display: "flex", alignItems: "center", gap: "4px" }}>
+                  <MapPin size={12} style={{ color: "var(--pin-red)" }} />
                   {profile?.ward || "Ward 1"}
                 </div>
               </div>
 
               {/* Navigation Menu */}
-              <div className="space-y-1">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-pin-gray px-2 mb-1.5">
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-light)", padding: "0 8px 4px 8px" }}>
                   {t("citizen.portalNav")}
                 </div>
 
@@ -137,17 +132,20 @@ export default function CitizenHome() {
                     setActiveView("complaints");
                     setSidebarOpen(false);
                   }}
-                  className={"w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer " +
-                    (activeView === "complaints"
-                      ? "bg-pin-dark text-white shadow-xs"
-                      : "text-pin-dark hover:bg-pin-pill")}
+                  className={`sidebar-nav-btn ${activeView === "complaints" ? "active-dark" : ""}`}
                 >
-                  <span className="flex items-center gap-2.5 truncate">
-                    <FileText size={15} className="shrink-0" />
-                    <span className="truncate">{t("citizen.myComplaints")}</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <FileText size={15} />
+                    <span>{t("citizen.myComplaints")}</span>
                   </span>
-                  <span className={"ml-2 shrink-0 px-2 py-0.5 rounded-md text-[10px] font-bold " +
-                    (activeView === "complaints" ? "bg-white/20 text-white" : "bg-pin-pill text-pin-dark border border-pin-border")}>
+                  <span style={{
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    backgroundColor: activeView === "complaints" ? "rgba(255,255,255,0.2)" : "var(--pin-pill)",
+                    color: activeView === "complaints" ? "#ffffff" : "var(--pin-dark)"
+                  }}>
                     {complaintsCount.total}
                   </span>
                 </motion.button>
@@ -158,16 +156,13 @@ export default function CitizenHome() {
                     setActiveView("file");
                     setSidebarOpen(false);
                   }}
-                  className={"w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer " +
-                    (activeView === "file"
-                      ? "bg-pin-red text-white shadow-xs"
-                      : "text-pin-dark hover:bg-pin-pill")}
+                  className={`sidebar-nav-btn ${activeView === "file" ? "active-red" : ""}`}
                 >
-                  <span className="flex items-center gap-2.5 truncate">
-                    <PlusCircle size={15} className="shrink-0" />
-                    <span className="truncate">{t("citizen.fileNew")}</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <PlusCircle size={15} />
+                    <span>{t("citizen.fileNew")}</span>
                   </span>
-                  <span className={activeView === "file" ? "text-white" : "text-pin-red font-bold"}>➔</span>
+                  <span>➔</span>
                 </motion.button>
 
                 <motion.button
@@ -176,50 +171,47 @@ export default function CitizenHome() {
                     setActiveView("faq");
                     setSidebarOpen(false);
                   }}
-                  className={"w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer " +
-                    (activeView === "faq"
-                      ? "bg-pin-dark text-white shadow-xs"
-                      : "text-pin-dark hover:bg-pin-pill")}
+                  className={`sidebar-nav-btn ${activeView === "faq" ? "active-dark" : ""}`}
                 >
-                  <span className="flex items-center gap-2.5 truncate">
-                    <HelpCircle size={15} className="shrink-0" />
-                    <span className="truncate">{t("citizen.guidelines")}</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <HelpCircle size={15} />
+                    <span>{t("citizen.guidelines")}</span>
                   </span>
                 </motion.button>
               </div>
 
               {/* Status Overview Card */}
-              <div className="bg-white rounded-xl p-4 border border-pin-border shadow-xs space-y-2.5">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-pin-gray">
+              <div className="card" style={{ padding: "1rem" }}>
+                <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-light)", marginBottom: "8px" }}>
                   {t("citizen.snapshot")}
                 </div>
 
-                <div className="flex items-center justify-between text-xs font-semibold">
-                  <span className="flex items-center gap-2 text-pin-gray font-medium">
-                    <Clock size={13} className="text-amber-600 shrink-0" />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.75rem", marginBottom: "8px" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)" }}>
+                    <Clock size={13} style={{ color: "var(--color-warning)" }} />
                     {t("citizen.inProgress")}
                   </span>
-                  <span className="text-pin-dark font-bold">{complaintsCount.active}</span>
+                  <span style={{ fontWeight: 700, color: "var(--pin-dark)" }}>{complaintsCount.active}</span>
                 </div>
 
-                <div className="flex items-center justify-between text-xs font-semibold">
-                  <span className="flex items-center gap-2 text-pin-gray font-medium">
-                    <CheckCircle2 size={13} className="text-emerald-600 shrink-0" />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.75rem" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)" }}>
+                    <CheckCircle2 size={13} style={{ color: "var(--color-success)" }} />
                     {t("citizen.resolvedClosed")}
                   </span>
-                  <span className="text-pin-dark font-bold">{complaintsCount.resolved}</span>
+                  <span style={{ fontWeight: 700, color: "var(--pin-dark)" }}>{complaintsCount.resolved}</span>
                 </div>
               </div>
 
               {/* Municipal Emergency Contacts */}
-              <div className="bg-pin-pill/60 rounded-xl p-4 text-xs text-pin-dark space-y-2 mt-auto border border-pin-border">
-                <div className="font-bold flex items-center gap-1.5 text-pin-red">
-                  <PhoneCall size={13} className="shrink-0" /> Ward Control Room
+              <div style={{ backgroundColor: "var(--bg-surface)", borderRadius: "var(--radius-md)", padding: "1rem", border: "1px solid var(--border-color)", fontSize: "0.75rem", marginTop: "auto" }}>
+                <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: "6px", color: "var(--pin-red)", marginBottom: "4px" }}>
+                  <PhoneCall size={13} /> Ward Control Room
                 </div>
-                <div className="text-[11px] text-pin-gray leading-relaxed">
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", lineHeight: 1.45, marginBottom: "8px" }}>
                   For active electrical sparking or burst water mains, call toll-free municipal emergency:
                 </div>
-                <div className="font-mono font-bold text-xs text-pin-dark bg-white py-1 px-2.5 rounded-md border border-pin-border inline-block">
+                <div style={{ fontFamily: "monospace", fontWeight: 700, fontSize: "11px", color: "var(--pin-dark)", background: "#ffffff", padding: "4px 8px", borderRadius: "4px", border: "1px solid var(--border-color)", display: "inline-block" }}>
                   1800-11-CIVIC (24/7)
                 </div>
               </div>
@@ -231,12 +223,12 @@ export default function CitizenHome() {
         {sidebarOpen && (
           <div
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 z-30 bg-black/30 backdrop-blur-xs lg:hidden"
+            className="sidebar-backdrop"
           />
         )}
 
         {/* 3. MAIN DASHBOARD CONTENT AREA */}
-        <main className="flex-1 min-w-0">
+        <main style={{ flex: 1, minWidth: 0 }}>
           {activeView === "complaints" && (
             <MyComplaints onFileNew={() => setActiveView("file")} />
           )}
@@ -250,83 +242,68 @@ export default function CitizenHome() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-slate-100 space-y-6 max-w-2xl mx-auto"
+              className="card"
+              style={{ maxWidth: "42rem", margin: "0 auto", padding: "1.75rem" }}
             >
-              <div className="border-b border-slate-100 pb-4">
-                <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                  <span>Citizen Authority & Grievance Protocol</span>
+              <div style={{ borderBottom: "1px solid var(--border-subtle)", paddingBottom: "1rem", marginBottom: "1.25rem" }}>
+                <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text-dark)", letterSpacing: "-0.02em" }}>
+                  Citizen Authority & Grievance Protocol
                 </h2>
-                <p className="text-sm text-slate-500 mt-1">
+                <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginTop: "4px" }}>
                   How tickets are processed, triaged, and closed transparently under municipal governance.
                 </p>
               </div>
 
-              <div className="space-y-3">
-                <motion.div 
-                  whileHover={{ y: -2 }}
-                  transition={{ duration: 0.2 }}
-                  className="group p-4 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50/30 border border-slate-200/80 hover:border-blue-300 hover:shadow-md transition-all text-xs text-slate-700 space-y-1.5"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-blue-100 text-blue-700 font-bold text-[10px]">
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+                <div style={{ padding: "1rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-color)", fontSize: "0.75rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "1.5rem", height: "1.5rem", borderRadius: "6px", backgroundColor: "var(--blue-light)", color: "var(--blue-primary)", fontWeight: 800, fontSize: "10px" }}>
                       01
                     </span>
-                    <span className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">
+                    <span style={{ fontWeight: 700, color: "var(--text-dark)", fontSize: "0.875rem" }}>
                       Plain SQL Duplicate Detection
                     </span>
                   </div>
-                  <p className="text-slate-600 pl-8 leading-relaxed">
+                  <p style={{ color: "var(--text-secondary)", paddingLeft: "2rem", lineHeight: 1.5 }}>
                     When filing a grievance, the portal proactively checks for identical complaints logged within the last 7 days in your ward to avoid duplicate dispatches.
                   </p>
-                </motion.div>
+                </div>
 
-                <motion.div 
-                  whileHover={{ y: -2 }}
-                  transition={{ duration: 0.2 }}
-                  className="group p-4 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50/30 border border-slate-200/80 hover:border-blue-300 hover:shadow-md transition-all text-xs text-slate-700 space-y-1.5"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-blue-100 text-blue-700 font-bold text-[10px]">
+                <div style={{ padding: "1rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-color)", fontSize: "0.75rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "1.5rem", height: "1.5rem", borderRadius: "6px", backgroundColor: "var(--blue-light)", color: "var(--blue-primary)", fontWeight: 800, fontSize: "10px" }}>
                       02
                     </span>
-                    <span className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">
+                    <span style={{ fontWeight: 700, color: "var(--text-dark)", fontSize: "0.875rem" }}>
                       Mandatory Field Proof Before Close
                     </span>
                   </div>
-                  <p className="text-slate-600 pl-8 leading-relaxed">
+                  <p style={{ color: "var(--text-secondary)", paddingLeft: "2rem", lineHeight: 1.5 }}>
                     Officers are strictly forbidden from closing complaints unilaterally. Marking resolved requires field remediation notes and an on-site photographic proof.
                   </p>
-                </motion.div>
+                </div>
 
-                <motion.div 
-                  whileHover={{ y: -2 }}
-                  transition={{ duration: 0.2 }}
-                  className="group p-4 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50/30 border border-slate-200/80 hover:border-blue-300 hover:shadow-md transition-all text-xs text-slate-700 space-y-1.5"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-blue-100 text-blue-700 font-bold text-[10px]">
+                <div style={{ padding: "1rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-color)", fontSize: "0.75rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "1.5rem", height: "1.5rem", borderRadius: "6px", backgroundColor: "var(--blue-light)", color: "var(--blue-primary)", fontWeight: 800, fontSize: "10px" }}>
                       03
                     </span>
-                    <span className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">
+                    <span style={{ fontWeight: 700, color: "var(--text-dark)", fontSize: "0.875rem" }}>
                       72-Hour Citizen Verification Authority
                     </span>
                   </div>
-                  <p className="text-slate-600 pl-8 leading-relaxed">
+                  <p style={{ color: "var(--text-secondary)", paddingLeft: "2rem", lineHeight: 1.5 }}>
                     Once an officer marks an issue resolved, you inspect the proof: clicking &quot;Yes, it is fixed&quot; closes the ticket; clicking &quot;No, reopen it&quot; automatically escalates to the City Administrator.
                   </p>
-                </motion.div>
+                </div>
               </div>
 
-              <div className="pt-2">
+              <div style={{ paddingTop: "1rem" }}>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
-                  whileHover={{ scale: 1.02 }}
                   onClick={() => setActiveView("complaints")}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-xl shadow-md shadow-blue-500/20 cursor-pointer transition-all"
+                  className="btn btn-primary"
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                  </svg>
                   Back to My Complaints
                 </motion.button>
               </div>
@@ -336,5 +313,4 @@ export default function CitizenHome() {
       </div>
     </div>
   );
-  
 }

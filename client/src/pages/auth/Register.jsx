@@ -29,7 +29,6 @@ export default function Register() {
         phone,
         ward
       });
-      // Immediately guided to citizen portal!
       navigate("/citizen");
     } catch (err) {
       console.error(err);
@@ -40,41 +39,41 @@ export default function Register() {
   };
 
   return (
-    <div className="max-w-lg mx-auto my-12 px-4">
+    <div className="auth-page-container" style={{ maxWidth: "480px" }}>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow"
+        className="auth-card"
       >
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 inline-flex items-center justify-center mb-3">
+        <div className="auth-header">
+          <div className="auth-icon-circle" style={{ backgroundColor: "var(--color-success-bg)", color: "var(--color-success)" }}>
             <UserPlus size={24} />
           </div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="auth-title">
             Citizen Registration
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="auth-subtitle">
             Register to lodge civic grievances and track resolution in your ward
           </p>
         </div>
 
         {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-3 text-sm flex gap-2.5 items-start mb-5">
-            <AlertCircle size={16} className="shrink-0 mt-0.5 text-rose-600" />
+          <div className="alert alert-danger">
+            <AlertCircle size={16} style={{ flexShrink: 0, marginTop: "2px" }} />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="fullName">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="fullName">
               Full Name
             </label>
             <input
               id="fullName"
               type="text"
-              className="w-full px-3.5 py-2.5 text-sm text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="form-input"
               required
               placeholder="e.g. Alice Sharma"
               value={fullName}
@@ -82,28 +81,28 @@ export default function Register() {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="phone">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="phone">
                 Phone Number
               </label>
               <input
                 id="phone"
                 type="tel"
-                className="w-full px-3.5 py-2.5 text-sm text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+                className="form-input"
                 placeholder="e.g. 9876543210"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="ward">
+            <div className="form-group">
+              <label className="form-label" htmlFor="ward">
                 Residential Ward
               </label>
               <select
                 id="ward"
-                className="w-full px-3.5 py-2.5 text-sm text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+                className="form-select"
                 value={ward}
                 onChange={(e) => setWard(e.target.value)}
               >
@@ -114,14 +113,14 @@ export default function Register() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="email">
+          <div className="form-group">
+            <label className="form-label" htmlFor="email">
               Email Address
             </label>
             <input
               id="email"
               type="email"
-              className="w-full px-3.5 py-2.5 text-sm text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="form-input"
               required
               placeholder="e.g. citizen@gmail.com"
               value={email}
@@ -129,14 +128,14 @@ export default function Register() {
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="password">
+          <div className="form-group">
+            <label className="form-label" htmlFor="password">
               Password (minimum 6 characters)
             </label>
             <input
               id="password"
               type="password"
-              className="w-full px-3.5 py-2.5 text-sm text-slate-900 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="form-input"
               required
               minLength={6}
               placeholder="••••••••"
@@ -149,7 +148,8 @@ export default function Register() {
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={loading}
-            className="w-full mt-2 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-sm py-3 px-5 rounded-xl shadow-sm hover:shadow transition-all disabled:opacity-60 cursor-pointer"
+            className="btn btn-primary"
+            style={{ width: "100%", padding: "0.75rem", fontSize: "0.875rem", marginTop: "0.5rem" }}
           >
             {loading ? (
               <>
@@ -165,9 +165,9 @@ export default function Register() {
           </motion.button>
         </form>
 
-        <div className="mt-6 pt-5 border-t border-slate-100 text-center text-sm text-slate-500">
+        <div className="auth-footer-prompt">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 font-semibold hover:underline">
+          <Link to="/login" style={{ color: "var(--blue-primary)", fontWeight: 600 }}>
             Sign in
           </Link>
         </div>

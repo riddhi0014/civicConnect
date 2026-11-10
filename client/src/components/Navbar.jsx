@@ -20,57 +20,51 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-pin-border shadow-xs transition-all">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between h-24 ">
+    <header className="site-header">
+      <div className="site-header-inner">
         {/* Brand */}
-        <Link to="/" className="flex items-center gap-2.5 group bg-gray-200 px-3 py-2 rounded-2xl">
+        <Link to="/" className="brand-link">
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-9 h-9 rounded-xl bg-[#234cc6] text-white flex items-center justify-center shadow-sm"
+            className="brand-icon-box"
           >
             <Landmark size={20} />
           </motion.div>
           <div>
-            <div className="font-extrabold text-2xl text-pin-dark tracking-tight leading-none group-hover:text-[#234cc6] transition-colors">
+            <div className="brand-title">
               CivicConnect
             </div>
-            <div className="text-[10px] font-semibold tracking-wider text-pin-gray uppercase mt-0.5">
+            <div className="brand-subtitle">
               Municipal Redressal
             </div>
           </div>
         </Link>
 
         {/* User & Auth Controls */}
-        <div className="flex items-center gap-2.5">
+        <div className="nav-actions">
           {/* Language Toggle */}
           <LanguageSelector />
 
           {user ? (
-            <div className="flex items-center gap-2.5">
+            <div className="nav-user-cluster">
               {/* Role badge */}
-              <span className={"inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide capitalize " +
-                (role === "admin"
-                  ? "bg-purple-100 text-purple-800"
-                  : role === "officer"
-                  ? "bg-amber-100 text-amber-800"
-                  : "bg-pin-redLight text-pin-red border border-pin-red/20")}
-              >
+              <span className={`role-badge ${role === "admin" ? "admin" : role === "officer" ? "officer" : "citizen"}`}>
                 <ShieldCheck size={13} />
                 {role || "Citizen"}
               </span>
 
               {/* Profile Avatar */}
-              <div className="w-8 h-8 rounded-full bg-pin-pill border border-pin-border flex items-center justify-center text-pin-dark font-bold text-xs">
+              <div className="user-avatar-pill">
                 {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : <User size={16} />}
               </div>
 
-              <div className="hidden sm:flex flex-col">
-                <span className="text-xs font-bold text-pin-dark leading-tight">
+              <div className="user-meta-column">
+                <span className="user-meta-name">
                   {profile?.full_name || user.email?.split("@")[0]}
                 </span>
                 {profile?.ward && (
-                  <span className="text-[11px] font-medium text-pin-gray">
+                  <span className="user-meta-ward">
                     {profile.ward}
                   </span>
                 )}
@@ -80,7 +74,7 @@ export default function Navbar() {
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 onClick={handleLogout}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-pin-border text-pin-dark hover:bg-pin-pill cursor-pointer transition-colors shadow-xs"
+                className="btn btn-secondary"
                 title="Sign out"
               >
                 <LogOut size={13} />
@@ -88,11 +82,11 @@ export default function Navbar() {
               </motion.button>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="nav-actions">
               <motion.div whileTap={{ scale: 0.96 }}>
                 <Link
                   to="/login"
-                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white border border-pin-border hover:bg-pin-pill text-pin-dark transition-all shadow-xs"
+                  className="btn btn-secondary"
                 >
                   {t("nav.signIn")}
                 </Link>
@@ -100,7 +94,7 @@ export default function Navbar() {
               <motion.div whileTap={{ scale: 0.96 }}>
                 <Link
                   to="/register"
-                  className="px-4 py-1.5 rounded-lg text-xs font-bold bg-pin-red hover:bg-pin-redHover text-white shadow-xs transition-all"
+                  className="btn btn-pin-red"
                 >
                   {t("nav.register")}
                 </Link>

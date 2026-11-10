@@ -12,16 +12,13 @@ export default function LanguageSelector() {
   };
 
   return (
-    <div className="flex items-center bg-pin-pill p-1 rounded-lg border border-pin-border">
-      <Globe size={13} className="text-pin-gray ml-1.5 mr-1" />
+    <div className="lang-selector-box">
+      <Globe size={13} style={{ color: "var(--pin-gray)", marginLeft: "6px", marginRight: "4px" }} />
       <motion.button
         whileTap={{ scale: 0.95 }}
         type="button"
         onClick={() => toggleLanguage("en")}
-        className={"px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer font-bold " +
-          (currentLang === "en"
-            ? "bg-white text-pin-dark shadow-xs"
-            : "text-pin-gray hover:text-pin-dark")}
+        className={`lang-btn ${currentLang === "en" ? "active" : ""}`}
       >
         EN
       </motion.button>
@@ -29,10 +26,7 @@ export default function LanguageSelector() {
         whileTap={{ scale: 0.95 }}
         type="button"
         onClick={() => toggleLanguage("hi")}
-        className={"px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer font-bold " +
-          (currentLang === "hi"
-            ? "bg-white text-pin-dark shadow-xs"
-            : "text-pin-gray hover:text-pin-dark")}
+        className={`lang-btn ${currentLang === "hi" ? "active" : ""}`}
       >
         हिंदी
       </motion.button>

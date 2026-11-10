@@ -23,16 +23,16 @@ export default function StatusStepper({ status, closedReason }) {
   const isReopened = status === "reopened";
 
   return (
-    <div className="my-4">
-      <div className="flex items-center justify-between relative">
+    <div className="stepper-container">
+      <div className="stepper-flex">
         {/* Background track */}
-        <div className="absolute top-3.5 left-5 right-5 h-0.5 bg-slate-200 z-0" />
+        <div className="stepper-track-bg" />
 
         {/* Dynamic active progress fill */}
         <div
-          className={"absolute top-3.5 left-5 h-0.5 z-0 transition-all duration-300 " +
-            (isReopened ? "bg-amber-500" : "bg-pin-dark")}
+          className="stepper-track-fill"
           style={{
+            backgroundColor: isReopened ? "var(--color-warning)" : "var(--pin-dark)",
             width: Math.min(100, Math.max(0, ((currentStepNum - 1) / (STEPS.length - 1)) * 100)) + "%"
           }}
         />
@@ -42,19 +42,49 @@ export default function StatusStepper({ status, closedReason }) {
           const isCompleted = currentStepNum > stepNumber || (status === "closed" && stepNumber === 5);
           const isCurrent = currentStepNum === stepNumber;
 
+          let circleBg = "#ffffff";
+          let circleColor = "var(--pin-gray)";
+          let circleBorder = "2px solid var(--border-color)";
+
+          if (isCompleted) {
+            circleBg = "var(--pin-dark)";
+            circleColor = "#ffffff";
+            circleBorder = "2px solid var(--pin-dark)";
+          } else if (isCurrent) {
+            if (isReopened) {
+              circleBg = "var(--color-warning-bg)";
+              circleColor = "var(--color-warning-text)";
+              circleBorder = "2px solid var(--color-warning)";
+            } else if (status === "resolved") {
+              circleBg = "var(--color-success-bg)";
+              circleColor = "var(--color-success-text)";
+              circleBorder = "2px solid var(--color-success)";
+            } else {
+              circleBg = "var(--pin-pill)";
+              circleColor = "var(--pin-dark)";
+              circleBorder = "2px solid var(--pin-dark)";
+            }
+          }
+
+          let labelColor = "var(--text-light)";
+          let labelWeight = 400;
+          if (isCurrent) {
+            labelColor = "var(--text-dark)";
+            labelWeight = 700;
+          } else if (isCompleted) {
+            labelColor = "var(--text-secondary)";
+            labelWeight = 600;
+          }
+
           return (
-            <div key={step.key} className="relative z-10 flex flex-col items-center flex-1">
+            <div key={step.key} className="stepper-step-col">
               <div
-                className={"w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all " +
-                  (isCompleted
-                    ? "bg-pin-dark text-white border-2 border-pin-dark shadow-xs"
-                    : isCurrent
-                    ? (isReopened
-                      ? "bg-amber-50 text-amber-800 border-2 border-amber-500 ring-2 ring-amber-100"
-                      : status === "resolved"
-                      ? "bg-emerald-50 text-emerald-700 border-2 border-emerald-600 ring-2 ring-emerald-100"
-                      : "bg-pin-pill text-pin-dark border-2 border-pin-dark ring-2 ring-pin-border")
-                    : "bg-white text-pin-gray border-2 border-pin-border")}
+                className="stepper-circle"
+                style={{
+                  background: circleBg,
+                  color: circleColor,
+                  border: circleBorder
+                }}
               >
                 {isCompleted ? (
                   <Check size={13} strokeWidth={3} />
@@ -68,8 +98,8 @@ export default function StatusStepper({ status, closedReason }) {
               </div>
 
               <div
-                className={"mt-1.5 text-[11px] text-center whitespace-nowrap " +
-                  (isCurrent ? "font-bold text-slate-900" : isCompleted ? "font-semibold text-slate-600" : "text-slate-400")}
+                className="stepper-step-label"
+                style={{ color: labelColor, fontWeight: labelWeight }}
               >
                 {isReopened && isCurrent ? "Reopened" : step.label}
               </div>
@@ -79,7 +109,7 @@ export default function StatusStepper({ status, closedReason }) {
       </div>
 
       {closedReason && (
-        <div className="text-center text-[11px] text-emerald-600 font-semibold mt-2">
+        <div style={{ textAlign: "center", fontSize: "0.6875rem", color: "var(--color-success-text)", fontWeight: 600, marginTop: "0.5rem" }}>
           ✓ Verified resolution ({closedReason === "citizen_confirmed" ? "Citizen Confirmed" : "72h Auto-close"})
         </div>
       )}
