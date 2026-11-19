@@ -314,6 +314,12 @@ export default function OfficerHome() {
                     }}>
                       {c.status.replace("_", " ")}
                     </span>
+
+                    {c.supporter_count > 0 && (
+                      <span className="badge badge-supporters" title="Citizens who reported facing the same issue">
+                        👥 {c.supporter_count + 1} citizens affected
+                      </span>
+                    )}
                   </div>
                 </div>
 

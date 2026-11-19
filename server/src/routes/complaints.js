@@ -4,6 +4,7 @@ const { supabaseAdmin } = require('../config/supabase');
 const { triageComplaint } = require('../services/ai');
 const { calculateDueAt, autoAssignComplaint } = require('../services/assignment');
 const { runAutoCloseJob } = require('../services/cron');
+const { PRIORITY_BOOST_THRESHOLD, isMissingTable, attachSupportCounts } = require('../services/supporters');
 
 const router = express.Router();
 
@@ -52,7 +53,7 @@ router.get('/check-duplicate', requireAuth, async (req, res) => {
 
     let query = supabaseAdmin
       .from('complaints')
-      .select('id, title, status, ward, created_at')
+      .select('id, title, status, ward, created_at, citizen_id')
       .eq('category_id', category_id)
       .gte('created_at', sevenDaysAgo)
       .neq('status', 'closed');
@@ -68,7 +69,10 @@ router.get('/check-duplicate', requireAuth, async (req, res) => {
       return res.json({ duplicates: [] });
     }
 
-    res.json({ duplicates: duplicates || [] });
+    const withSupport = await attachSupportCounts(duplicates, req.user.id);
+    res.json({
+      duplicates: withSupport.map(({ citizen_id, ...d }) => ({ ...d, is_mine: citizen_id === req.user.id }))
+    });
   } catch (err) {
     console.error('Error checking duplicates:', err);
     res.json({ duplicates: [] });
@@ -243,7 +247,7 @@ router.get('/mine', requireAuth, requireRole('citizen', 'admin'), async (req, re
       feedback: Array.isArray(c.feedback) ? (c.feedback[0] || null) : c.feedback
     }));
 
-    res.json({ complaints: formattedComplaints });
+    res.json({ complaints: await attachSupportCounts(formattedComplaints) });
   } catch (err) {
     console.error('Fetch mine complaints error:', err);
     res.status(500).json({ error: 'Failed to retrieve your complaints' });
@@ -413,6 +417,119 @@ router.post('/:id/feedback', requireAuth, requireRole('citizen', 'admin'), async
   } catch (err) {
     console.error('Feedback error:', err);
     res.status(500).json({ error: err.message || 'Server error recording feedback' });
+  }
+});
+
+/**
+ * POST /api/complaints/:id/support
+ * "Me too": a citizen affected by the same issue joins an existing complaint
+ * instead of filing a duplicate. At PRIORITY_BOOST_THRESHOLD supporters the
+ * complaint is raised to high priority with the tighter SLA.
+ */
+router.post('/:id/support', requireAuth, requireRole('citizen'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const citizenId = req.user.id;
+
+    const { data: complaint, error: fetchError } = await supabaseAdmin
+      .from('complaints')
+      .select('id, citizen_id, status, priority, due_at')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !complaint) {
+      return res.status(404).json({ error: 'Complaint not found' });
+    }
+    if (complaint.citizen_id === citizenId) {
+      return res.status(400).json({ error: 'You filed this complaint, so you are already counted.' });
+    }
+    if (complaint.status === 'closed') {
+      return res.status(400).json({ error: 'This complaint is already closed.' });
+    }
+
+    const { error: insertError } = await supabaseAdmin
+      .from('complaint_supporters')
+      .insert({ complaint_id: id, citizen_id: citizenId });
+
+    if (insertError) {
+      if (insertError.code === '23505') {
+        return res.status(409).json({ error: 'You have already marked this issue as affecting you.' });
+      }
+      if (isMissingTable(insertError)) {
+        return res.status(503).json({ error: 'Me-too support is not set up yet. Run migration 005_complaint_supporters.sql in Supabase.' });
+      }
+      return res.status(500).json({ error: insertError.message });
+    }
+
+    const { count } = await supabaseAdmin
+      .from('complaint_supporters')
+      .select('*', { count: 'exact', head: true })
+      .eq('complaint_id', id);
+    const supporterCount = count || 0;
+
+    await supabaseAdmin.from('complaint_events').insert({
+      complaint_id: id,
+      actor_id: citizenId,
+      from_status: complaint.status,
+      to_status: complaint.status,
+      note: `Another citizen is facing this issue too (${supporterCount + 1} citizens affected)`
+    });
+
+    let priorityRaised = false;
+    if (supporterCount >= PRIORITY_BOOST_THRESHOLD && complaint.priority !== 'high') {
+      const highDueAt = calculateDueAt('high');
+      const dueAt = complaint.due_at && new Date(complaint.due_at) < new Date(highDueAt) ? complaint.due_at : highDueAt;
+
+      await supabaseAdmin
+        .from('complaints')
+        .update({ priority: 'high', due_at: dueAt })
+        .eq('id', id);
+
+      await supabaseAdmin.from('complaint_events').insert({
+        complaint_id: id,
+        actor_id: null,
+        from_status: complaint.status,
+        to_status: complaint.status,
+        note: `Priority raised to High: ${supporterCount + 1} citizens affected`
+      });
+      priorityRaised = true;
+    }
+
+    res.status(201).json({
+      message: 'Thanks! Your support has been added to this complaint.',
+      supporter_count: supporterCount,
+      priority_raised: priorityRaised
+    });
+  } catch (err) {
+    console.error('Support complaint error:', err);
+    res.status(500).json({ error: err.message || 'Server error adding support' });
+  }
+});
+
+/**
+ * DELETE /api/complaints/:id/support
+ * Citizen withdraws their "Me too"
+ */
+router.delete('/:id/support', requireAuth, requireRole('citizen'), async (req, res) => {
+  try {
+    const { error } = await supabaseAdmin
+      .from('complaint_supporters')
+      .delete()
+      .eq('complaint_id', req.params.id)
+      .eq('citizen_id', req.user.id);
+
+    if (error) {
+      return res.status(isMissingTable(error) ? 503 : 500).json({ error: error.message });
+    }
+
+    const { count } = await supabaseAdmin
+      .from('complaint_supporters')
+      .select('*', { count: 'exact', head: true })
+      .eq('complaint_id', req.params.id);
+
+    res.json({ message: 'Support withdrawn', supporter_count: count || 0 });
+  } catch (err) {
+    res.status(500).json({ error: err.message || 'Server error withdrawing support' });
   }
 });
 

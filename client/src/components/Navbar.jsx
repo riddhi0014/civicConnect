@@ -1,10 +1,11 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { ShieldCheck, LogOut, User, Landmark } from "lucide-react";
+import { ShieldCheck, LogOut, User, Landmark, MapPinned } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
   const { user, profile, role, signOut } = useAuth();
@@ -43,11 +44,22 @@ export default function Navbar() {
 
         {/* User & Auth Controls */}
         <div className="nav-actions">
+          {/* Public ward map */}
+          <Link
+            to="/map"
+            className={`nav-map-link ${isActive("/map") ? "active" : ""}`}
+            title={t("nav.wardMap")}
+          >
+            <MapPinned size={15} />
+            <span>{t("nav.wardMap")}</span>
+          </Link>
+
           {/* Language Toggle */}
           <LanguageSelector />
 
           {user ? (
             <div className="nav-user-cluster">
+              <NotificationBell key={user.id} userId={user.id} />
               {/* Role badge */}
               <span className={`role-badge ${role === "admin" ? "admin" : role === "officer" ? "officer" : "citizen"}`}>
                 <ShieldCheck size={13} />

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import CategoryIcon from "../components/CategoryIcon";
+import ResolvedGallery from "../components/ResolvedGallery";
 
 const ROTATING_ISSUES = [
   { text: "Crater pothole on main artery", cat: "Roads", icon: "🛣️", priority: "High", dept: "Public Works" },
@@ -298,6 +299,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Before/after proof of resolved complaints */}
+      <ResolvedGallery limit={6} />
 
       {/* 3. 10 CATEGORIES GRID */}
       <section className="categories-section">

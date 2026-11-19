@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Unauthorized from "./pages/Unauthorized";
+import PublicMap from "./pages/PublicMap";
 import CitizenHome from "./pages/citizen/CitizenHome";
 import OfficerHome from "./pages/officer/OfficerHome";
 import AdminHome from "./pages/admin/AdminHome";
@@ -91,6 +92,9 @@ export default function App() {
                 }
               />
               <Route path="/unauthorized" element={<Unauthorized />} />
+
+              {/* Public transparency map + resolved gallery (no login) */}
+              <Route path="/map" element={<PublicMap />} />
 
               {/* Protected Role Portals */}
               <Route

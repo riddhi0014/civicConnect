@@ -1,6 +1,7 @@
 const express = require('express');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { supabaseAdmin } = require('../config/supabase');
+const { attachSupportCounts } = require('../services/supporters');
 
 const router = express.Router();
 
@@ -62,7 +63,7 @@ router.get('/complaints', async (req, res) => {
     }));
 
     res.json({
-      complaints: enrichedComplaints,
+      complaints: await attachSupportCounts(enrichedComplaints),
       kpis: {
         assignedCount: activeComplaints.length,
         overdueCount: overdueComplaints.length,

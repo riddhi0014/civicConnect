@@ -291,6 +291,12 @@ export default function MyComplaints({ onFileNew }) {
                   <span className="badge badge-status">
                     {c.status.replace("_", " ")}
                   </span>
+
+                  {c.supporter_count > 0 && (
+                    <span className="badge badge-supporters" title={t("metoo.others", { count: c.supporter_count })}>
+                      👥 +{c.supporter_count}
+                    </span>
+                  )}
                 </div>
               </div>
 

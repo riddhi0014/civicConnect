@@ -10,13 +10,18 @@ import {
   ArrowRight,
   ShieldAlert,
   Loader2,
-  FileCheck
+  FileCheck,
+  Users,
+  Check
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import CategoryIcon from "../../components/CategoryIcon";
+import VoiceInput from "../../components/VoiceInput";
 
 export default function FileComplaint({ onSuccess }) {
   const { profile } = useAuth();
+  const { t } = useTranslation();
 
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -33,6 +38,8 @@ export default function FileComplaint({ onSuccess }) {
 
   const [liveDuplicates, setLiveDuplicates] = useState([]);
   const [checkingDuplicates, setCheckingDuplicates] = useState(false);
+  const [supportBusyId, setSupportBusyId] = useState(null);
+  const [supportMessage, setSupportMessage] = useState({ type: "", text: "" });
 
   const [detectingGps, setDetectingGps] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -97,6 +104,36 @@ export default function FileComplaint({ onSuccess }) {
       clearTimeout(timer);
     };
   }, [selectedCategoryId, ward]);
+
+  // "Me too": join an existing open complaint instead of filing a duplicate
+  const handleToggleSupport = async (dup) => {
+    setSupportBusyId(dup.id);
+    setSupportMessage({ type: "", text: "" });
+    try {
+      const data = await apiRequest(`/complaints/${dup.id}/support`, {
+        method: dup.supported_by_me ? "DELETE" : "POST"
+      });
+      setLiveDuplicates((prev) =>
+        prev.map((d) =>
+          d.id === dup.id
+            ? { ...d, supported_by_me: !dup.supported_by_me, supporter_count: data.supporter_count }
+            : d
+        )
+      );
+      if (!dup.supported_by_me) {
+        setSupportMessage({ type: "success", text: data.priority_raised ? t("metoo.raised") : t("metoo.added") });
+      }
+    } catch (err) {
+      setSupportMessage({ type: "danger", text: err.message });
+    } finally {
+      setSupportBusyId(null);
+    }
+  };
+
+  const appendVoiceText = (text) => {
+    if (!text) return;
+    setDescription((prev) => (prev.trim() ? prev.trimEnd() + " " + text : text));
+  };
 
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
@@ -330,9 +367,12 @@ export default function FileComplaint({ onSuccess }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="description">
-              Detailed Description
-            </label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "6px" }}>
+              <label className="form-label" htmlFor="description" style={{ margin: 0 }}>
+                Detailed Description
+              </label>
+              <VoiceInput onTranscript={appendVoiceText} />
+            </div>
             <textarea
               id="description"
               className="form-textarea"
@@ -421,14 +461,47 @@ export default function FileComplaint({ onSuccess }) {
             {liveDuplicates.length > 0 && (
               <div style={{ marginTop: "8px", fontSize: "11px" }}>
                 <p>The municipal board already has open complaints recorded under <b>{selectedCategory?.name}</b> in <b>{ward}</b>:</p>
-                <div style={{ backgroundColor: "rgba(255, 255, 255, 0.8)", padding: "8px", borderRadius: "6px", marginTop: "4px" }}>
+                <p style={{ marginTop: "4px" }}>{t("metoo.hint")}</p>
+                <div style={{ backgroundColor: "rgba(255, 255, 255, 0.8)", padding: "8px", borderRadius: "6px", marginTop: "6px" }}>
                   {liveDuplicates.map((dup) => (
-                    <div key={dup.id} style={{ display: "flex", justifyContent: "space-between", margin: "2px 0" }}>
-                      <span>• <b>#{dup.id.slice(0, 8)}</b>: "{dup.title}"</span>
-                      <span style={{ fontWeight: 600, textTransform: "capitalize" }}>({dup.status})</span>
+                    <div key={dup.id} className="metoo-row">
+                      <div style={{ minWidth: 0 }}>
+                        <div>• <b>#{dup.id.slice(0, 8)}</b>: "{dup.title}"</div>
+                        <div className="metoo-row-meta">
+                          <span style={{ textTransform: "capitalize" }}>{t(`complaint.status.${dup.status}`, dup.status)}</span>
+                          {dup.supporter_count > 0 && (
+                            <span><Users size={11} /> {t("metoo.others", { count: dup.supporter_count })}</span>
+                          )}
+                        </div>
+                      </div>
+                      {dup.is_mine ? (
+                        <span className="metoo-yours">{t("metoo.yours")}</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className={`metoo-btn ${dup.supported_by_me ? "supported" : ""}`}
+                          onClick={() => handleToggleSupport(dup)}
+                          disabled={supportBusyId === dup.id}
+                        >
+                          {supportBusyId === dup.id ? (
+                            <Loader2 size={12} className="animate-spin" />
+                          ) : dup.supported_by_me ? (
+                            <Check size={12} />
+                          ) : (
+                            <Users size={12} />
+                          )}
+                          {dup.supported_by_me ? `${t("metoo.supported")} · ${t("metoo.undo")}` : t("metoo.button")}
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
+                {supportMessage.text && (
+                  <div className={`alert alert-${supportMessage.type}`} style={{ marginTop: "8px", marginBottom: 0 }}>
+                    {supportMessage.type === "success" ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+                    <span>{supportMessage.text}</span>
+                  </div>
+                )}
               </div>
             )}
           </div>

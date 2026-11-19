@@ -5,7 +5,9 @@
     "adminConsole": "Admin Console",
     "exit": "Exit",
     "signIn": "Sign In",
-    "register": "Register"
+    "register": "Register",
+    "wardMap": "Ward Map",
+    "notifications": "Notifications"
   },
   "home": {
     "badge": "CIVIC REDRESSAL PROTOCOL · LIVE ACROSS 20 WARDS",
@@ -87,5 +89,59 @@
     "submitFeedback": "Submit Feedback",
     "auditTrail": "View Activity Trail",
     "hideAuditTrail": "Hide Audit Trail"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No updates yet. You'll see progress on your complaints here.",
+    "markAllRead": "Mark all as read",
+    "statusTo": "Status changed to {{status}}",
+    "justNow": "just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  },
+  "map": {
+    "title": "Live Ward Map",
+    "subtitle": "Every GPS-tagged complaint in the city, coloured by status. Updated live from the grievance register.",
+    "total": "Total complaints",
+    "open": "Open",
+    "inProgress": "In progress",
+    "resolved": "Resolved",
+    "all": "All",
+    "affected": "{{count}} citizens affected",
+    "reported": "Reported {{date}}",
+    "noPins": "No GPS-tagged complaints match this filter yet.",
+    "loading": "Loading ward map...",
+    "error": "Could not load the ward map."
+  },
+  "gallery": {
+    "tag": "Proof of Work",
+    "title": "Recently fixed in your city",
+    "subtitle": "Real complaints closed by municipal officers, with the on-site photo proof they uploaded.",
+    "before": "Before",
+    "after": "After",
+    "noBefore": "No photo from citizen",
+    "fixedIn": "Fixed in {{count}} days",
+    "fixedSameDay": "Fixed same day",
+    "empty": "Resolved complaints with photo proof will appear here.",
+    "viewMap": "See all complaints on the ward map"
+  },
+  "metoo": {
+    "button": "I'm facing this too",
+    "supported": "You're affected",
+    "undo": "Undo",
+    "others": "{{count}} others affected",
+    "yours": "Your complaint",
+    "hint": "Same problem? Tap “I'm facing this too” instead of filing a duplicate. When 5 or more citizens join, priority is raised automatically.",
+    "added": "Added! Officers can now see you're affected too.",
+    "raised": "Priority raised to High because so many citizens are affected."
+  },
+  "voice": {
+    "start": "Speak",
+    "stop": "Stop",
+    "listening": "Listening... speak in {{lang}}",
+    "unsupported": "Voice input works in Chrome or Edge",
+    "denied": "Microphone permission was denied",
+    "error": "Voice input stopped. Try again."
   }
 }
