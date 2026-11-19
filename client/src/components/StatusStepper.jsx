@@ -23,85 +23,69 @@ export default function StatusStepper({ status, closedReason }) {
   const isReopened = status === "reopened";
 
   return (
-    <div className="stepper-container">
-      <div className="stepper-flex">
-        {/* Background track */}
-        <div className="stepper-track-bg" />
-
-        {/* Dynamic active progress fill */}
-        <div
-          className="stepper-track-fill"
-          style={{
-            backgroundColor: isReopened ? "var(--color-warning)" : "var(--pin-dark)",
-            width: Math.min(100, Math.max(0, ((currentStepNum - 1) / (STEPS.length - 1)) * 100)) + "%"
-          }}
-        />
-
+    <div style={{ margin: "0.5rem 0 0.25rem 0" }}>
+      {/* Sleek Segmented Pipeline */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "6px", alignItems: "center" }}>
         {STEPS.map((step, index) => {
           const stepNumber = index + 1;
           const isCompleted = currentStepNum > stepNumber || (status === "closed" && stepNumber === 5);
           const isCurrent = currentStepNum === stepNumber;
 
-          let circleBg = "#ffffff";
-          let circleColor = "var(--pin-gray)";
-          let circleBorder = "2px solid var(--border-color)";
+          let barBg = "#e2e8f0";
+          let labelColor = "#94a3b8";
+          let labelWeight = 500;
 
           if (isCompleted) {
-            circleBg = "var(--pin-dark)";
-            circleColor = "#ffffff";
-            circleBorder = "2px solid var(--pin-dark)";
+            barBg = "#1e293b";
+            labelColor = "#334155";
+            labelWeight = 600;
           } else if (isCurrent) {
             if (isReopened) {
-              circleBg = "var(--color-warning-bg)";
-              circleColor = "var(--color-warning-text)";
-              circleBorder = "2px solid var(--color-warning)";
+              barBg = "#d97706";
+              labelColor = "#b45309";
+              labelWeight = 700;
             } else if (status === "resolved") {
-              circleBg = "var(--color-success-bg)";
-              circleColor = "var(--color-success-text)";
-              circleBorder = "2px solid var(--color-success)";
+              barBg = "#16a34a";
+              labelColor = "#15803d";
+              labelWeight = 700;
             } else {
-              circleBg = "var(--pin-pill)";
-              circleColor = "var(--pin-dark)";
-              circleBorder = "2px solid var(--pin-dark)";
+              barBg = "#2563eb";
+              labelColor = "#1d4ed8";
+              labelWeight = 700;
             }
           }
 
-          let labelColor = "var(--text-light)";
-          let labelWeight = 400;
-          if (isCurrent) {
-            labelColor = "var(--text-dark)";
-            labelWeight = 700;
-          } else if (isCompleted) {
-            labelColor = "var(--text-secondary)";
-            labelWeight = 600;
-          }
-
           return (
-            <div key={step.key} className="stepper-step-col">
+            <div key={step.key} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
               <div
-                className="stepper-circle"
                 style={{
-                  background: circleBg,
-                  color: circleColor,
-                  border: circleBorder
+                  height: "3px",
+                  borderRadius: "2px",
+                  backgroundColor: barBg,
+                  transition: "background-color 0.25s ease"
+                }}
+              />
+              <div
+                style={{
+                  fontSize: "10.5px",
+                  color: labelColor,
+                  fontWeight: labelWeight,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "3px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis"
                 }}
               >
                 {isCompleted ? (
-                  <Check size={13} strokeWidth={3} />
+                  <Check size={10} strokeWidth={3} style={{ color: "#334155", flexShrink: 0 }} />
                 ) : isCurrent && isReopened ? (
-                  <AlertTriangle size={13} />
+                  <AlertTriangle size={10} style={{ color: "#d97706", flexShrink: 0 }} />
                 ) : isCurrent && status === "resolved" ? (
-                  <CheckCircle2 size={13} />
-                ) : (
-                  <span>{stepNumber}</span>
-                )}
-              </div>
-
-              <div
-                className="stepper-step-label"
-                style={{ color: labelColor, fontWeight: labelWeight }}
-              >
-                {isReopened && isCurrent ? "Reopened" : step.label}
+                  <CheckCircle2 size={10} style={{ color: "#16a34a", flexShrink: 0 }} />
+                ) : null}
+                <span>{isReopened && isCurrent ? "Reopened" : step.label}</span>
               </div>
             </div>
           );
@@ -109,8 +93,9 @@ export default function StatusStepper({ status, closedReason }) {
       </div>
 
       {closedReason && (
-        <div style={{ textAlign: "center", fontSize: "0.6875rem", color: "var(--color-success-text)", fontWeight: 600, marginTop: "0.5rem" }}>
-          ✓ Verified resolution ({closedReason === "citizen_confirmed" ? "Citizen Confirmed" : "72h Auto-close"})
+        <div style={{ fontSize: "11px", color: "#16a34a", fontWeight: 600, marginTop: "6px", display: "flex", alignItems: "center", gap: "4px" }}>
+          <CheckCircle2 size={12} />
+          <span>Resolution verified ({closedReason === "citizen_confirmed" ? "Citizen Confirmed" : "72h Auto-close"})</span>
         </div>
       )}
     </div>

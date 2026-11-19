@@ -521,7 +521,20 @@ export default function AdminHome() {
               {categories.map((cat) => (
                 <div key={cat.id} className="card" style={{ padding: "1.5rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "0.75rem" }}>
-                    <span style={{ fontSize: "1.75rem" }}>{cat.icon}</span>
+                    <div style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "10px",
+                      backgroundColor: "var(--blue-light, #eff6ff)",
+                      border: "1px solid var(--blue-border, #bfdbfe)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "var(--blue-primary, #1e40af)",
+                      flexShrink: 0
+                    }}>
+                      <CategoryIcon name={cat.name} icon={cat.icon} size={22} />
+                    </div>
                     <div>
                       <h4 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-dark)" }}>{cat.name}</h4>
                       <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--blue-primary)" }}>{cat.departments?.name}</div>

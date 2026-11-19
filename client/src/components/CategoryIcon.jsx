@@ -7,7 +7,8 @@ import {
   Trash,
   OctagonMinus,
   Droplets,
-  HelpCircle
+  HelpCircle,
+  ClipboardList
 } from "lucide-react";
 
 /**
@@ -114,6 +115,9 @@ export function getCategoryIconComponent(nameOrIcon) {
   }
   if (normalized.includes("water") || normalized.includes("supply") || normalized.includes("leak") || normalized.includes("💧")) {
     return Droplets;
+  }
+  if (normalized.includes("other") || normalized.includes("general") || normalized.includes("📋")) {
+    return ClipboardList;
   }
 
   return HelpCircle;

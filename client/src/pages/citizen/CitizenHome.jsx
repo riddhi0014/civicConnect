@@ -203,16 +203,40 @@ export default function CitizenHome() {
                 </div>
               </div>
 
-              {/* Municipal Emergency Contacts */}
-              <div style={{ backgroundColor: "var(--bg-surface)", borderRadius: "var(--radius-md)", padding: "1rem", border: "1px solid var(--border-color)", fontSize: "0.75rem", marginTop: "auto" }}>
-                <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: "6px", color: "var(--pin-red)", marginBottom: "4px" }}>
-                  <PhoneCall size={13} /> Ward Control Room
+              {/* Minimalist Ward Emergency Contact */}
+              <div style={{
+                marginTop: "auto",
+                padding: "0.875rem",
+                borderRadius: "10px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#f8fafc",
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", fontWeight: 600, color: "#334155" }}>
+                    <PhoneCall size={13} style={{ color: "#64748b" }} />
+                    <span>Ward Emergency Desk</span>
+                  </div>
+                  <span style={{ fontSize: "10px", fontWeight: 600, color: "#64748b", backgroundColor: "#e2e8f0", padding: "1px 6px", borderRadius: "4px" }}>
+                    24/7
+                  </span>
                 </div>
-                <div style={{ fontSize: "11px", color: "var(--text-muted)", lineHeight: 1.45, marginBottom: "8px" }}>
-                  For active electrical sparking or burst water mains, call toll-free municipal emergency:
-                </div>
-                <div style={{ fontFamily: "monospace", fontWeight: 700, fontSize: "11px", color: "var(--pin-dark)", background: "#ffffff", padding: "4px 8px", borderRadius: "4px", border: "1px solid var(--border-color)", display: "inline-block" }}>
-                  1800-11-CIVIC (24/7)
+                <a
+                  href="tel:18001124842"
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#1e293b",
+                    textDecoration: "none",
+                    letterSpacing: "0.02em"
+                  }}
+                >
+                  1800-11-CIVIC
+                </a>
+                <div style={{ fontSize: "11px", color: "#64748b", lineHeight: 1.35 }}>
+                  For live wire sparking or water main bursts.
                 </div>
               </div>
             </aside>

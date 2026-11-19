@@ -438,73 +438,174 @@ export default function FileComplaint({ onSuccess }) {
           />
 
           {/* Duplicate Alert Notice */}
-          <div className={`alert ${liveDuplicates.length > 0 ? "alert-warning" : "alert-success"}`} style={{ display: "block" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700 }}>
-                {liveDuplicates.length > 0 ? (
-                  <>
-                    <ShieldAlert size={15} />
-                    <span>Potential Duplicate Alert ({liveDuplicates.length} open issue in {ward})</span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 size={15} />
-                    <span>Duplicate Check: No similar open complaints in {ward}</span>
-                  </>
+          {liveDuplicates.length > 0 ? (
+            <div style={{
+              backgroundColor: "#fffdfa",
+              border: "1px solid #fde68a",
+              borderRadius: "12px",
+              padding: "1.125rem",
+              marginTop: "1.25rem",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.03)"
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "8px",
+                    backgroundColor: "#fef3c7",
+                    color: "#b45309",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0
+                  }}>
+                    <ShieldAlert size={17} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "14px", fontWeight: 700, color: "#1e293b", letterSpacing: "-0.01em" }}>
+                      Potential Duplicate Alert ({liveDuplicates.length} open issue in {ward})
+                    </div>
+                    <div style={{ fontSize: "12.5px", color: "#64748b", marginTop: "2px" }}>
+                      Active complaints are already recorded under <b>{selectedCategory?.name}</b> in <b>{ward}</b>.
+                    </div>
+                  </div>
+                </div>
+                {checkingDuplicates && (
+                  <span style={{ fontSize: "12px", color: "#94a3b8" }}>Checking...</span>
                 )}
               </div>
-              {checkingDuplicates && (
-                <span style={{ fontSize: "11px", color: "var(--text-light)" }}>Checking...</span>
-              )}
-            </div>
 
-            {liveDuplicates.length > 0 && (
-              <div style={{ marginTop: "8px", fontSize: "11px" }}>
-                <p>The municipal board already has open complaints recorded under <b>{selectedCategory?.name}</b> in <b>{ward}</b>:</p>
-                <p style={{ marginTop: "4px" }}>{t("metoo.hint")}</p>
-                <div style={{ backgroundColor: "rgba(255, 255, 255, 0.8)", padding: "8px", borderRadius: "6px", marginTop: "6px" }}>
-                  {liveDuplicates.map((dup) => (
-                    <div key={dup.id} className="metoo-row">
-                      <div style={{ minWidth: 0 }}>
-                        <div>• <b>#{dup.id.slice(0, 8)}</b>: "{dup.title}"</div>
-                        <div className="metoo-row-meta">
-                          <span style={{ textTransform: "capitalize" }}>{t(`complaint.status.${dup.status}`, dup.status)}</span>
-                          {dup.supporter_count > 0 && (
-                            <span><Users size={11} /> {t("metoo.others", { count: dup.supporter_count })}</span>
-                          )}
-                        </div>
+              <p style={{ fontSize: "12.5px", color: "#475569", lineHeight: 1.5, marginBottom: "0.875rem" }}>
+                {t("metoo.hint")}
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                {liveDuplicates.map((dup) => (
+                  <div
+                    key={dup.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "12px",
+                      backgroundColor: "#ffffff",
+                      border: "1px solid #f1f5f9",
+                      borderRadius: "8px",
+                      padding: "10px 14px",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.02)"
+                    }}
+                  >
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}>
+                        <span style={{
+                          fontFamily: "monospace",
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          color: "#64748b",
+                          background: "#f1f5f9",
+                          padding: "1px 6px",
+                          borderRadius: "4px"
+                        }}>
+                          #{dup.id.slice(0, 8)}
+                        </span>
+                        <span style={{ fontSize: "13px", fontWeight: 600, color: "#1e293b" }}>
+                          {dup.title}
+                        </span>
                       </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "11.5px", color: "#64748b" }}>
+                        <span style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          textTransform: "capitalize",
+                          color: dup.status === "resolved" ? "#16a34a" : "#2563eb",
+                          fontWeight: 600
+                        }}>
+                          <span style={{
+                            width: "6px",
+                            height: "6px",
+                            borderRadius: "50%",
+                            backgroundColor: dup.status === "resolved" ? "#16a34a" : "#2563eb"
+                          }} />
+                          {t(`complaint.status.${dup.status}`, dup.status)}
+                        </span>
+                        {dup.supporter_count > 0 && (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", color: "#475569" }}>
+                            <Users size={12} /> {t("metoo.others", { count: dup.supporter_count })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div>
                       {dup.is_mine ? (
-                        <span className="metoo-yours">{t("metoo.yours")}</span>
+                        <span style={{ fontSize: "12px", fontWeight: 600, color: "#64748b", background: "#f8fafc", padding: "4px 8px", borderRadius: "6px" }}>
+                          {t("metoo.yours")}
+                        </span>
                       ) : (
                         <button
                           type="button"
-                          className={`metoo-btn ${dup.supported_by_me ? "supported" : ""}`}
                           onClick={() => handleToggleSupport(dup)}
                           disabled={supportBusyId === dup.id}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            padding: "6px 12px",
+                            borderRadius: "6px",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            transition: "all 0.15s ease",
+                            border: dup.supported_by_me ? "1px solid #86efac" : "1px solid #cbd5e1",
+                            backgroundColor: dup.supported_by_me ? "#f0fdf4" : "#ffffff",
+                            color: dup.supported_by_me ? "#15803d" : "#1e293b"
+                          }}
                         >
                           {supportBusyId === dup.id ? (
-                            <Loader2 size={12} className="animate-spin" />
+                            <Loader2 size={13} className="animate-spin" />
                           ) : dup.supported_by_me ? (
-                            <Check size={12} />
+                            <Check size={13} />
                           ) : (
-                            <Users size={12} />
+                            <Users size={13} />
                           )}
                           {dup.supported_by_me ? `${t("metoo.supported")} · ${t("metoo.undo")}` : t("metoo.button")}
                         </button>
                       )}
                     </div>
-                  ))}
-                </div>
-                {supportMessage.text && (
-                  <div className={`alert alert-${supportMessage.type}`} style={{ marginTop: "8px", marginBottom: 0 }}>
-                    {supportMessage.type === "success" ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                    <span>{supportMessage.text}</span>
                   </div>
-                )}
+                ))}
               </div>
-            )}
-          </div>
+
+              {supportMessage.text && (
+                <div className={`alert alert-${supportMessage.type}`} style={{ marginTop: "10px", marginBottom: 0 }}>
+                  {supportMessage.type === "success" ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+                  <span>{supportMessage.text}</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div style={{
+              backgroundColor: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: "8px",
+              padding: "10px 14px",
+              marginTop: "1.25rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              fontSize: "12.5px",
+              color: "#475569"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <CheckCircle2 size={15} style={{ color: "#16a34a" }} />
+                <span>Duplicate Check: No similar open complaints in {ward}</span>
+              </div>
+              {checkingDuplicates && (
+                <span style={{ fontSize: "11px", color: "#94a3b8" }}>Checking...</span>
+              )}
+            </div>
+          )}
 
           <motion.button
             whileTap={{ scale: 0.96 }}

@@ -163,108 +163,152 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Col: Interactive Simulator */}
+            {/* Right Col: Interactive Lifecycle Simulator */}
             <div className="simulator-wrapper">
-              <div className="simulator-tag-top">
-                <Sparkles size={14} />
-                AI Triage: High Priority Assigned
-              </div>
-
-              <div className="simulator-tag-bottom">
-                <CheckCircle2 size={14} />
-                Resolution Proof Enforced
-              </div>
-
-              <div className="simulator-card">
-                <div className="simulator-header">
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span style={{ fontSize: "1.5rem" }}>🛣️</span>
-                    <div>
-                      <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-light)" }}>#TKT-1042 · ROADS</div>
-                      <div style={{ fontSize: "14px", fontWeight: 800, color: "var(--text-dark)" }}>Pothole at Market Gate</div>
-                    </div>
+              <div className="simulator-card" style={{ border: "1px solid #cbd5e1", borderRadius: "14px", overflow: "hidden", padding: 0, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)" }}>
+                {/* Mock Window Top Bar */}
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "10px 16px",
+                  backgroundColor: "#f8fafc",
+                  borderBottom: "1px solid #e2e8f0"
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ width: "9px", height: "9px", borderRadius: "50%", backgroundColor: "#ef4444", display: "inline-block" }} />
+                    <span style={{ width: "9px", height: "9px", borderRadius: "50%", backgroundColor: "#f59e0b", display: "inline-block" }} />
+                    <span style={{ width: "9px", height: "9px", borderRadius: "50%", backgroundColor: "#10b981", display: "inline-block" }} />
                   </div>
-                  <span className="badge badge-urgent">
-                    <span className="urgent-pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--color-danger)" }} />
-                    High Priority
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", fontWeight: 600, color: "#64748b" }}>
+                    <Sparkles size={12} style={{ color: "var(--blue-primary)" }} />
+                    <span>Lifecycle Governance Simulator</span>
+                  </div>
+                  <span style={{ fontSize: "10px", fontWeight: 600, color: "#16a34a", backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", padding: "1px 6px", borderRadius: "4px" }}>
+                    Live Preview
                   </span>
                 </div>
 
-                {/* Stage Simulator Selector */}
-                <div className="simulator-tabs">
-                  {[
-                    { key: "submitted", label: "1. Filed" },
-                    { key: "assigned", label: "2. Assigned" },
-                    { key: "resolved", label: "3. Proof" },
-                    { key: "closed", label: "4. Confirmed" }
-                  ].map((tab) => (
-                    <button
-                      key={tab.key}
-                      onClick={() => setSimulatedStage(tab.key)}
-                      className={`simulator-tab-btn ${simulatedStage === tab.key ? "active" : ""}`}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-
-                <p style={{ fontSize: "12px", color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: "1rem" }}>
-                  &quot;Deep pothole at City Market main entry. Two vehicles damaged rim this morning. Requires asphalt leveling.&quot;
-                </p>
-
-                {simulatedStage === "submitted" && (
-                  <div className="alert alert-info" style={{ display: "block" }}>
-                    <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
-                      <Activity size={14} /> Stage: Complaint Logged
+                <div style={{ padding: "1.25rem 1.5rem" }}>
+                  {/* Ticket Header */}
+                  <div className="simulator-header" style={{ marginBottom: "0.875rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "8px",
+                        backgroundColor: "#eff6ff",
+                        border: "1px solid #bfdbfe",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#1d4ed8",
+                        flexShrink: 0
+                      }}>
+                        <CategoryIcon name="Roads" size={18} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-muted)" }}>
+                          Ticket #TKT-1042 · Public Works (Roads)
+                        </div>
+                        <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-dark)" }}>
+                          Pothole at Market Gate
+                        </div>
+                      </div>
                     </div>
-                    <div style={{ lineHeight: 1.45 }}>
-                      Plain SQL duplicate check passed. AI engine triaging urgency and predicting SLA...
-                    </div>
+                    <span className="badge badge-urgent" style={{ fontSize: "11px", padding: "2px 8px" }}>
+                      <span className="urgent-pulse-dot" style={{ width: "5px", height: "5px", borderRadius: "50%", background: "var(--color-danger)" }} />
+                      High Priority
+                    </span>
                   </div>
-                )}
 
-                {simulatedStage === "assigned" && (
-                  <div className="alert alert-warning" style={{ display: "block" }}>
-                    <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
-                      <UserCheck size={14} /> Dispatched: Officer A. Sharma
-                    </div>
-                    <div style={{ lineHeight: 1.45 }}>
-                      Auto-assigned based on lowest queue workload in Ward 1. Target SLA: 24 Hours.
-                    </div>
+                  {/* Stage Simulator Selector */}
+                  <div className="simulator-tabs" style={{ marginBottom: "0.875rem" }}>
+                    {[
+                      { key: "submitted", label: "1. Logged" },
+                      { key: "assigned", label: "2. Dispatched" },
+                      { key: "resolved", label: "3. Field Proof" },
+                      { key: "closed", label: "4. Confirmed" }
+                    ].map((tab) => (
+                      <button
+                        key={tab.key}
+                        onClick={() => setSimulatedStage(tab.key)}
+                        className={`simulator-tab-btn ${simulatedStage === tab.key ? "active" : ""}`}
+                        style={{ fontSize: "11.5px", padding: "5px 8px" }}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
-                )}
 
-                {simulatedStage === "resolved" && (
-                  <div className="alert alert-success" style={{ display: "block" }}>
-                    <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
-                      <CheckCircle2 size={14} /> Officer Submitted Field Proof
+                  <p style={{ fontSize: "12px", color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: "0.875rem" }}>
+                    &quot;Deep pothole at City Market main entry. Two vehicles damaged rim this morning. Requires asphalt leveling.&quot;
+                  </p>
+
+                  {simulatedStage === "submitted" && (
+                    <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "12px", fontSize: "12px" }}>
+                      <div style={{ fontWeight: 600, color: "#1e293b", display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+                        <Sparkles size={14} style={{ color: "#2563eb" }} />
+                        <span>Automated Triage Assessment</span>
+                      </div>
+                      <div style={{ color: "#475569", lineHeight: 1.45 }}>
+                        Duplicate check passed. Priority scored as <b>High (Traffic Hazard)</b>. Target SLA: <b>24 Hours</b>.
+                      </div>
                     </div>
-                    <div style={{ marginBottom: "8px", fontWeight: 500 }}>
-                      &quot;Bitumen patch laid and steamrolled flat on 11 Oct.&quot;
+                  )}
+
+                  {simulatedStage === "assigned" && (
+                    <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "12px", fontSize: "12px" }}>
+                      <div style={{ fontWeight: 600, color: "#1e293b", display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+                        <UserCheck size={14} style={{ color: "#2563eb" }} />
+                        <span>Field Officer Dispatched</span>
+                      </div>
+                      <div style={{ color: "#475569", lineHeight: 1.45 }}>
+                        Dispatched to <b>Officer A. Sharma</b> (Public Works, Ward 1) based on lowest active workload queue.
+                      </div>
                     </div>
-                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                      <span style={{ padding: "2px 8px", borderRadius: "6px", background: "var(--color-success-bg)", border: "1px solid var(--color-success-border)", color: "var(--color-success-text)", fontWeight: 600, fontSize: "11px" }}>
-                        📷 After-Photo Attached
-                      </span>
-                      <span style={{ fontSize: "11px", color: "var(--color-success-text)" }}>Awaiting citizen check (72h timer)</span>
+                  )}
+
+                  {simulatedStage === "resolved" && (
+                    <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "8px", padding: "12px", fontSize: "12px" }}>
+                      <div style={{ fontWeight: 600, color: "#166534", display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+                        <CheckCircle2 size={14} style={{ color: "#16a34a" }} />
+                        <span>Mandatory Field Remediation Proof</span>
+                      </div>
+                      <div style={{ color: "#1e293b", marginBottom: "8px", fontStyle: "italic" }}>
+                        &quot;Bitumen patch laid and steamrolled flat on 11 Oct.&quot;
+                      </div>
+                      <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", padding: "2px 8px", borderRadius: "4px", backgroundColor: "#ffffff", border: "1px solid #86efac", color: "#166534", fontSize: "11px", fontWeight: 600 }}>
+                          <Camera size={12} /> On-Site Photo Attached
+                        </span>
+                        <span style={{ fontSize: "11px", color: "#15803d" }}>Citizen verification active (72h timer)</span>
+                      </div>
                     </div>
+                  )}
+
+                  {simulatedStage === "closed" && (
+                    <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "12px", fontSize: "12px" }}>
+                      <div style={{ fontWeight: 600, color: "#1e293b", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+                        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <CheckCircle2 size={14} style={{ color: "#16a34a" }} /> Citizen Confirmed &amp; Closed
+                        </span>
+                        <div style={{ display: "flex", gap: "2px" }}>
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} size={13} style={{ fill: "#f59e0b", color: "#f59e0b" }} />
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ color: "#475569", lineHeight: 1.45 }}>
+                        Citizen rated: <b>5.0 / 5</b> &quot;Very fast resolution, excellent road leveling.&quot;
+                      </div>
+                    </div>
+                  )}
+
+                  <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid var(--border-subtle)", fontSize: "11px", color: "var(--text-light)", display: "flex", justifyContent: "space-between" }}>
+                    <span>Ward 1 · City Center</span>
+                    <span>Click tabs above to simulate workflow ➔</span>
                   </div>
-                )}
-
-                {simulatedStage === "closed" && (
-                  <div className="alert" style={{ display: "block", backgroundColor: "var(--bg-surface-alt)", border: "1px solid var(--border-color)", color: "var(--text-dark)" }}>
-                    <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }}>
-                      <Check size={14} style={{ color: "var(--color-success)" }} /> Citizen Confirmed: Closed
-                    </div>
-                    <div style={{ marginTop: "4px", color: "var(--text-muted)" }}>
-                      Citizen rated: ⭐⭐⭐⭐⭐ &quot;Very fast resolution, excellent road leveling.&quot;
-                    </div>
-                  </div>
-                )}
-
-                <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid var(--border-subtle)", fontSize: "11px", color: "var(--text-light)", display: "flex", justifyContent: "space-between" }}>
-                  <span>Ward 1 · City Center</span>
-                  <span>Click stage tabs above to preview flow ➔</span>
                 </div>
               </div>
             </div>

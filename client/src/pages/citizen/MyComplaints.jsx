@@ -16,7 +16,8 @@ import {
   ExternalLink,
   ThumbsUp,
   RotateCcw,
-  Star
+  Star,
+  Users
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -259,42 +260,44 @@ export default function MyComplaints({ onFileNew }) {
               className="complaint-ticket-card"
             >
               {/* Header Meta */}
-              <div className="complaint-card-meta">
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "monospace" }}>
-                  <span style={{ color: "var(--text-dark)", fontWeight: 700 }}>#{c.id.slice(0, 8)}</span>
-                  <span style={{ color: "var(--border-color)" }}>/</span>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-family)" }}>
-                    <CategoryIcon name={c.category?.name} icon={c.category?.icon} size={15} style={{ color: "var(--text-secondary)" }} />
-                    <span style={{ color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "11px", fontWeight: 700 }}>
-                      {c.category?.name || "Incident"}
-                    </span>
+              <div className="complaint-card-meta" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", paddingBottom: "8px", marginBottom: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12px", fontWeight: 700, color: "var(--text-dark)" }}>
+                    <CategoryIcon name={c.category?.name} icon={c.category?.icon} size={15} style={{ color: "var(--blue-primary)" }} />
+                    <span>{c.category?.name || "Incident"}</span>
                   </div>
                   {c.subcategory && (
-                    <span style={{ color: "var(--text-light)", fontFamily: "var(--font-family)", fontSize: "11px" }}>
+                    <span style={{ color: "var(--text-muted)", fontSize: "12px" }}>
                       · {c.subcategory.name}
                     </span>
                   )}
+                  <span style={{
+                    fontFamily: "monospace",
+                    fontSize: "11px",
+                    color: "var(--text-muted)",
+                    background: "var(--bg-surface-alt, #f1f5f9)",
+                    padding: "1px 6px",
+                    borderRadius: "4px"
+                  }}>
+                    #{c.id.slice(0, 8)}
+                  </span>
                 </div>
 
                 <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                  {isHighPriority ? (
-                    <span className="badge badge-high-fill">
+                  {isHighPriority && (
+                    <span className="badge badge-high-fill" style={{ fontSize: "11px", padding: "2px 8px" }}>
                       <span className="urgent-pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#ffffff" }} />
                       Urgent
                     </span>
-                  ) : (
-                    <span className="badge badge-default">
-                      {c.priority}
-                    </span>
                   )}
 
-                  <span className="badge badge-status">
+                  <span className="badge badge-status" style={{ fontSize: "11px", padding: "2px 8px" }}>
                     {c.status.replace("_", " ")}
                   </span>
 
                   {c.supporter_count > 0 && (
-                    <span className="badge badge-supporters" title={t("metoo.others", { count: c.supporter_count })}>
-                      👥 +{c.supporter_count}
+                    <span className="badge badge-supporters" style={{ fontSize: "11px", display: "inline-flex", alignItems: "center", gap: "4px" }} title={t("metoo.others", { count: c.supporter_count })}>
+                      <Users size={11} /> +{c.supporter_count}
                     </span>
                   )}
                 </div>
@@ -302,24 +305,38 @@ export default function MyComplaints({ onFileNew }) {
 
               {/* Title & Description */}
               <div style={{ marginBottom: "0.5rem" }}>
-                <h3 style={{ fontSize: "0.875rem", fontWeight: 700, color: "var(--text-dark)", letterSpacing: "-0.01em", marginBottom: "2px" }}>
+                <h3 style={{ fontSize: "0.9375rem", fontWeight: 700, color: "var(--text-dark)", letterSpacing: "-0.01em", marginBottom: "4px" }}>
                   {c.title}
                 </h3>
-                <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                <p style={{ fontSize: "0.8125rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
                   {c.description}
                 </p>
               </div>
 
               {/* Clean Minimalist Triage Note */}
               {c.ai_summary && (
-                <div style={{ backgroundColor: "var(--bg-surface)", borderLeft: "2px solid var(--text-dark)", padding: "0.5rem 0.75rem", borderRadius: "0 6px 6px 0", fontSize: "0.75rem", marginBottom: "0.5rem" }}>
-                  <span style={{ fontFamily: "monospace", fontSize: "10px", color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "2px" }}>Automated Triage Assessment</span>
-                  <p style={{ fontStyle: "italic", color: "var(--text-primary)" }}>&quot;{c.ai_summary}&quot;</p>
+                <div style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "8px",
+                  backgroundColor: "var(--bg-surface, #f8fafc)",
+                  border: "1px solid var(--border-color, #e2e8f0)",
+                  borderRadius: "6px",
+                  padding: "7px 10px",
+                  fontSize: "12px",
+                  color: "var(--text-secondary, #334155)",
+                  marginBottom: "0.625rem"
+                }}>
+                  <Sparkles size={14} style={{ color: "var(--blue-primary, #2563eb)", flexShrink: 0, marginTop: "2px" }} />
+                  <div style={{ lineHeight: 1.45 }}>
+                    <span style={{ fontWeight: 600, color: "var(--text-dark, #1e293b)" }}>Triage priority: </span>
+                    <span>{c.ai_summary}</span>
+                  </div>
                 </div>
               )}
 
               {/* Metadata Line */}
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", fontSize: "11px", color: "var(--text-muted)", paddingTop: "4px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", fontSize: "11px", color: "var(--text-muted)", paddingTop: "2px", marginBottom: "0.5rem" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                   <MapPin size={12} style={{ color: "var(--text-light)" }} />
                   <span>{c.location_text} {c.ward ? "(" + c.ward + ")" : ""}</span>
