@@ -24,7 +24,8 @@ app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     const normalizedOrigin = origin.replace(/\/$/, '');
-    if (allowedOrigins.includes(normalizedOrigin) || normalizedOrigin.endsWith('.vercel.app')) {
+    const isLocalDev = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(normalizedOrigin);
+    if (allowedOrigins.includes(normalizedOrigin) || isLocalDev || normalizedOrigin.endsWith('.vercel.app')) {
       return callback(null, true);
     }
     return callback(new Error(`CORS blocked for origin: ${origin}`));

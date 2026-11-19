@@ -7,7 +7,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001
  * to every backend request for server-side Express RBAC verification.
  */
 export async function apiRequest(endpoint, options = {}) {
-  const { data: { session } } = await supabase.auth.getSession();
+  let session = null;
+  try {
+    ({ data: { session } } = await supabase.auth.getSession());
+  } catch (err) {
+    throw new Error('Cannot reach Supabase to verify your login. Check your internet connection.');
+  }
   const token = session?.access_token;
 
   const headers = {
@@ -19,10 +24,19 @@ export async function apiRequest(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+      signal: options.signal || AbortSignal.timeout(30000)
+    });
+  } catch (err) {
+    if (err.name === 'TimeoutError') {
+      throw new Error('The server took too long to respond. Please try again.');
+    }
+    throw new Error('Cannot reach the CivicConnect server. Is the backend running?');
+  }
 
   const data = await response.json().catch(() => ({}));
 

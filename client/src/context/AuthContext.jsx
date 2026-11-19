@@ -89,17 +89,22 @@ export function AuthProvider({ children }) {
       });
 
     // 2. Real-time auth state listener
-    const { data } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // Must stay synchronous: awaiting Supabase calls inside this callback deadlocks
+    // the auth client, which makes every later getSession() (and API request) hang.
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!isMounted) return;
       const currentUser = session?.user ?? null;
       setUser(currentUser);
-      if (currentUser) {
-        await fetchProfile(currentUser.id);
-      } else {
-        setProfile(null);
-      }
-      setLoading(false);
-      clearTimeout(safetyTimeout);
+      setTimeout(async () => {
+        if (!isMounted) return;
+        if (currentUser) {
+          await fetchProfile(currentUser.id);
+        } else {
+          setProfile(null);
+        }
+        setLoading(false);
+        clearTimeout(safetyTimeout);
+      }, 0);
     });
 
     return () => {
@@ -112,11 +117,16 @@ export function AuthProvider({ children }) {
   // Citizen registration via Backend Admin API to auto-confirm dummy emails!
   async function signUp({ email, password, fullName, phone, ward }) {
     // 1. Call backend admin endpoint that creates user with email_confirm: true
-    const res = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, fullName, phone, ward })
-    });
+    let res;
+    try {
+      res = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, fullName, phone, ward })
+      });
+    } catch (err) {
+      throw new Error('Cannot reach the CivicConnect server. Is the backend running?');
+    }
 
     const result = await res.json().catch(() => ({}));
     if (!res.ok) {
@@ -134,7 +144,12 @@ export function AuthProvider({ children }) {
       password
     });
 
-    if (error) throw error;
+    if (error) {
+      if (error.message === 'Failed to fetch') {
+        throw new Error('Cannot reach Supabase from this browser. Check your internet connection or VITE_SUPABASE_URL.');
+      }
+      throw error;
+    }
     let userProfile = null;
     if (data?.user) {
       userProfile = await fetchProfile(data.user.id);

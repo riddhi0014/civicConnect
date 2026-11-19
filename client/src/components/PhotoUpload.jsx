@@ -45,7 +45,11 @@ export default function PhotoUpload({ onPhotoUploaded, label = "Attach Photo (Op
       onPhotoUploaded(publicUrl);
     } catch (err) {
       console.error("Photo upload error:", err);
-      setError(err.message || "Failed to upload photo.");
+      setError(
+        err.message === "Failed to fetch"
+          ? "Cannot reach Supabase Storage from this browser. Check your internet connection."
+          : err.message || "Failed to upload photo."
+      );
     } finally {
       setUploading(false);
     }
